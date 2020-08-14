@@ -1,0 +1,81 @@
+body{
+   background-color: white;
+   padding: 20px;
+}
+
+.container{
+   background-color: rgb(224, 221, 221);
+   min-height: 600px;
+}
+
+.centre{
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.droite{
+   display: flex;
+   justify-content: flex-end;
+   align-items: center;
+}
+
+.gauche{
+   display: flex;
+   justify-content: flex-start;
+   align-items: center;
+}
+
+
+form{
+   font-size: 18px;
+   /* min-width: 500px;
+   max-width: 800px; */
+}
+
+.clr{
+   display: block;
+   clear: both;
+}
+
+#imgPierre{
+   display:block;
+   float: left;
+   margin-top: 50px;
+   /* margin-left: 50px; */
+   width: 150px;
+   height:180px;
+   background-position: -35px 260px;
+   background-image: url('/outils/pierrefeuilleciseauxlezardspock.jpg');
+}
+
+#imgFeuille{
+   display:block;
+   float: left;
+   margin-top: 50px;
+   margin-left: 50px;
+   width: 150px;
+   height:180px;
+   background-position: -170px 260px;
+   background-image: url('/outils/pierrefeuilleciseauxlezardspock.jpg');
+}
+
+#imgCiseaux{
+   display:block;
+   float: left;
+   margin-top: 50px;
+   margin-left: 50px;
+   width: 150px;
+   height:180px;
+   background-position: -305px 260px;
+   background-image: url('/outils/pierrefeuilleciseauxlezardspock.jpg');
+}
+
+table{
+   text-align: center;
+}
+
+/* .invalid-feedback{
+   margin-top:-10px;
+   margin-left:10px
+} */
