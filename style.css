@@ -4,7 +4,7 @@ body{
 }
 
 .container{
-   background-color: rgb(224, 221, 221);
+   /* background-color: rgb(255, 253, 253); */
    min-height: 600px;
 }
 
@@ -36,39 +36,6 @@ form{
 .clr{
    display: block;
    clear: both;
-}
-
-#imgPierre{
-   display:block;
-   float: left;
-   margin-top: 50px;
-   /* margin-left: 50px; */
-   width: 150px;
-   height:180px;
-   background-position: -35px 260px;
-   background-image: url('/outils/pierrefeuilleciseauxlezardspock.jpg');
-}
-
-#imgFeuille{
-   display:block;
-   float: left;
-   margin-top: 50px;
-   margin-left: 50px;
-   width: 150px;
-   height:180px;
-   background-position: -170px 260px;
-   background-image: url('/outils/pierrefeuilleciseauxlezardspock.jpg');
-}
-
-#imgCiseaux{
-   display:block;
-   float: left;
-   margin-top: 50px;
-   margin-left: 50px;
-   width: 150px;
-   height:180px;
-   background-position: -305px 260px;
-   background-image: url('/outils/pierrefeuilleciseauxlezardspock.jpg');
 }
 
 table{
