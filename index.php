@@ -1,48 +1,7 @@
 <?php
 
 require 'vendor/autoload.php';
-
-$mongo = new MongoDB\Client("mongodb://127.0.0.1:27017");
-$db = $mongo->restaurants;
-$restos = $db->restos;
-
-$restaurant =
-   [
-      'nom' => 'monresto',
-      'cuisine' => ['Bretonne', 'Alsacienne'],
-      'adresse' => [
-         'numRue'        => 4,
-         'nomVoie'       => 'rue des restos',
-         'codePostal'    => 12345,
-         'ville'         => 'Bordeaux',
-         'lat' => 12.34,
-         'lon' => 56.67
-      ],
-      'tel' => '12 23 34 45 56',
-      'site' => 'https://monresto.com',
-      'tarifs' =>
-      [
-         'min' => 10,
-         'max' => 45
-      ],
-      'presentation' => 'blablabla blabla',
-      'commentaires' =>
-      [
-         [
-            'note' => 5,
-            'commentaire' => 'c bon !'
-         ],
-         [
-            'note' => 5,
-            'commentaire' => 'c bon !'
-         ],
-         [
-            'note' => 5,
-            'commentaire' => 'c bon !'
-         ]
-      ]
-
-   ];
+require 'config.php';
 
 if(isset($_POST['nom']))
 {
