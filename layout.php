@@ -7,7 +7,7 @@
    <!-- Bootstrap CSS -->
    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" crossorigin="anonymous">
    <script src="https://kit.fontawesome.com/fa79ab8443.js" crossorigin="anonymous"></script>
-   <link rel="stylesheet" href="http://192.168.205.63/php/semaine-10/jeudi/resto/style.css">
+   <link rel="stylesheet" href="<?= SITE ?>style.css">
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
    <title>Création de restaurant</title>
@@ -22,10 +22,10 @@
          <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                <li class="nav-item active">
-                  <a class="nav-link" href="http://192.168.205.63/php/semaine-10/jeudi/resto/liste">Liste</a>
+                  <a class="nav-link" href="<?= SITE ?>liste">Liste</a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link" href="http://192.168.205.63/php/semaine-10/jeudi/resto/ajout">Ajout</a>
+                  <a class="nav-link" href="<?= SITE ?>ajout">Ajout</a>
                </li>
                <!-- <li class="nav-item">
                   <a class="nav-link" href="#">Pricing</a>

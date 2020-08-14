@@ -1,18 +1,14 @@
 <?php 
-
-foreach ($result as $resto) {
-   //var_dump($rest);
-   //$id = $resto->_id;
-   $nom = $resto->nom;
-   $site = $resto->site;
-   $tel = $resto->tel;
-   $presentation = $resto->presentation;
-   $tarif_min = $resto->tarif_min;
-   $tarif_max = $resto->tarif_max;
+// Dans le résultat de la requète il n'y a qu'un seul resto
+foreach ($resultatRequete as $cle => $resto) {
+   // Décalaration dynamique des variables
+   foreach ($resto as $cle => $valeur) {
+      $$cle = $valeur;
+   }
 }
 ?>
 <div class="row flex-wrap centre p-4">
-   <h1>Création de restaurant</h1>
+   <h1>Création/MAJ de restaurant</h1>
    <div class="col-12 centre p-1">
       <form action="" method="POST" class="needs-validation p-3">
          <div class="form-row justify-content-center pb-3">
@@ -29,14 +25,9 @@ foreach ($result as $resto) {
          </div>
 
          <div class="form-row justify-content-center pb-3">
-            <div class="col-6 mb-3">
-               <label for="site">Site</label>
-               <input type="text" name="site" class="form-control " value="<?php echo $site ?>" placeholder="Site">
-
-            </div>
-            <div class="col-6 mb-3">
+            <div class="col mb-3">
                <label for="presentation">Présentation</label>
-               <textarea cols="40" rows="3" name="presentation" class="form-control " id="presentation" placeholder=""><?php echo $presentation ?></textarea>
+               <textarea cols="40" rows="3" name="presentation" class="form-control " id="presentation" placeholder=""><?php echo $purifier->purify($presentation) ?></textarea>
 
             </div>
          </div>
@@ -71,6 +62,14 @@ foreach ($result as $resto) {
             <div class="col-6 mb-3">
                <label for="longitude">Longitude</label>
                <input type="number" step="any" name="longitude" class="form-control " value="<?php echo $longitude ?>" placeholder="">
+
+            </div>
+         </div>
+
+         <div class="form-row justify-content-center pb-3">
+            <div class="col-6 mb-3">
+               <label for="site">Site</label>
+               <input type="text" name="site" class="form-control " value="<?php echo $site ?>" placeholder="Site">
 
             </div>
          </div>

@@ -1,126 +1,123 @@
 <?php
 
-require 'vendor/autoload.php';
-require 'config.php';
-require 'Resto.php';
+require_once 'htmlpurifier/library/HTMLPurifier.auto.php';
+require_once 'vendor/autoload.php';
+require_once 'config.php';
+require_once 'fonctions.php';
 
 $Parsedown = new Parsedown();
 $Parsedown->setMarkupEscaped(true);
+$purifier = new HTMLPurifier();
 
 $url = $_GET['url'];
 $url = explode('/', $url);
 
 $route = $url[0];
 
-$nom = $tel = $presentation = $tarif_min = $tarif_max = $site = $longitude = $latitude = '';
-
 $routes = ['fiche', 'ajout', 'edit', 'delete', 'liste'];
 $action = in_array($route, $routes) ? $route : 'Erreur';
 
+$nom = $site = $tel = $presentation = $tarif_min = $tarif_max = $longitude = $latitude = '';
+
+$restos = new Restos();
+$fillable = $restos->getFillable();
 switch ($action) {
+   // FICHE D'UN RESTO
    case 'fiche':
       if (isset($url[1])) {
          $id = $url[1];
-         $resto = new Resto();
-         $result = $resto->fiche($id);
+         $resultatRequete = $restos->fiche($id);
 
          ob_start();
          require 'fiche.php';
          $contenu = ob_get_clean();
       }
       break;
-   
+
+   // LISTE DE TOUS LES RESTOS
    case 'liste':
       if(isset($url[1]) && isset($url[2])){
          $orderby = $url[1];
          $sens = $url[2];
          $sens = ($sens == 'asc') ? -1 : 1;
 
-         $filter  = [];
-         $options = ['sort' => [$orderby => $sens]];
-         $restos = $restos->find($filter, $options);
-      }
-      else
-         $restos = $restos->find();
+         $resultatRequete = $restos->liste($orderby, $sens);
+      }else
+         $resultatRequete = $restos->liste();
 
       ob_start();
       require 'liste.php';
       $contenu = ob_get_clean();
       break;
 
+   // SUPPRESSION DE RESTO
    case 'delete':
-      // SUPPRESSION DE RESTO
       if (isset($url[1])) {
          $id = $url[1];
-         $_id = new MongoDB\BSON\ObjectId($id);
-         $restos->deleteOne(
-            ['_id' => $_id]
-         );
+         $restos->delete($id);
       }
+
+      $resultatRequete = $restos->liste();
       ob_start();
       require 'liste.php';
       $contenu = ob_get_clean();
       break;
 
+   // AJOUT D'UN RESTO
    case 'ajout':
+      $resultatRequete = [];
+      // Si on accède pour la 1ère fois à la page d'ajout (formulaire)
       if(!isset($_POST['nom'])){
          ob_start();
          require 'form.php';
          $contenu = ob_get_clean();
+
+      // Si on reçoit des infos venant du formulaire (POST)
       }else {
-         $nom = $_POST['nom'];
-         $tel = $_POST['tel'];
-         $site = $_POST['site'];
-         $presentation = $_POST['presentation'];
-         $tarif_min = $_POST['tarif_min'];
-         $tarif_max = $_POST['tarif_max'];
+         $resto = verifInputs($_POST, $fillable);
+         // Si la validation ne passe pas, on renvoie un message d'erreur
+         if($resto == false){
+            ob_start(); 
+            echo '<div class="alert alert-danger" role="alert"> Echec de l\'ajout </div>';
+            $contenu = ob_get_clean();
+            break;
+         }
       
-         $resto = [
-            'nom' => $nom,
-            'tel' => $tel,
-            'site' => $site,
-            'presentation' => $presentation,
-            'tarif_min' => $tarif_min,
-            'tarif_max' => $tarif_max
-         ];
-      
-         $restos->insertOne($resto);
+         $restos->ajout($resto);
+         $resultatRequete = $restos->liste();
          ob_start();
          require 'liste.php';
          $contenu = ob_get_clean();
       }
       break;
-   
+
+   // MAJ DES INFOS D'UN RESTO
    case 'edit':
       if (isset($url[1]))
       {
          $id = $url[1];
-         $_id = new MongoDB\BSON\ObjectId($id);
-         $result = $restos->find(['_id' => $_id]);
-         if(!isset($_POST['nom'])){
-            
+         $resultatRequete = $restos->fiche($id);
 
+         // On accède pour la 1ère fois à la page edit
+         if(!isset($_POST['nom'])){
             ob_start();
             require 'form.php';
             $contenu = ob_get_clean();
+
+         // Validation du formulaire depuis la page edit
          }else{
-            $nom = $_POST['nom'];
-            $tel = $_POST['tel'];
-            $site = $_POST['site'];
-            $presentation = $_POST['presentation'];
-            $tarif_min = $_POST['tarif_min'];
-            $tarif_max = $_POST['tarif_max'];
+            $resto = verifInputs($_POST, $fillable);
+
+            // Si la validation ne passe pas, on renvoie un message d'erreur
+            if($resto == false){
+               ob_start(); 
+               echo '<div class="alert alert-danger" role="alert"> Echec de la mise à jour. </div>';
+               $contenu = ob_get_clean();
+               break;
+            }
          
-            $resto = [
-               'nom' => $nom,
-               'tel' => $tel,
-               'site' => $site,
-               'presentation' => $presentation,
-               'tarif_min' => $tarif_min,
-               'tarif_max' => $tarif_max
-            ];
-         
-            $restos->updateOne(['_id' => $_id], ['$set' => $resto]);
+            $restos->edit($id, $resto);
+            $resultatRequete = $restos->liste();
             ob_start();
             require 'liste.php';
             $contenu = ob_get_clean();
@@ -129,7 +126,9 @@ switch ($action) {
       break;
          
    default:
-      # code...
+      ob_start();
+      echo "Vous n'avez pas accès à cette page.";
+      $contenu = ob_get_clean();
       break;
 }
 

@@ -1,13 +1,20 @@
 <?php
 
-class Resto
+class Restos
 {
-   public $restos;
+   private $restos;
+   private $fillable = ['nom', 'site', 'presentation', 'tarif_min', 'tarif_max', 'tel', 'longitude', 'latitude'];
+
    public function __construct()
    {
       $mongo = new MongoDB\Client("mongodb://127.0.0.1:27017");
       $db = $mongo->restaurants;
       $this->restos = $db->restos;
+   }
+
+   public function getFillable()
+   {
+      return $this->fillable;
    }
 
    public function init($resto)
@@ -39,8 +46,11 @@ class Resto
       return $this->restos->find(['_id' => $_id]);
    }
 
-   public function liste()
+   public function liste($orderby = '', $sens = '')
    {
-      return $this->restos->find();
+      if($orderby == '')
+         return $this->restos->find();
+      
+      return $this->restos->find([], ['sort' => [$orderby => $sens]]);
    }
 }
