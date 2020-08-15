@@ -13,23 +13,26 @@ function verifInputs(array $POST, array $fillable)
 {
    $args = array(
       'nom'      => FILTER_SANITIZE_SPECIAL_CHARS,
-      'vie'      => array('filter' => FILTER_VALIDATE_INT,
+      'tarif_min'      => array('filter' => FILTER_VALIDATE_INT,
                           'options' => array('min_range' => 0, 'max_range' => 100)),
-      'degats'   => array('filter' => FILTER_VALIDATE_INT,
+      'tarif_max'   => array('filter' => FILTER_VALIDATE_INT,
                           'options' => array('min_range' => 0, 'max_range' => 20)),
-      'photo'    => FILTER_SANITIZE_ENCODED,
+      'tel'    => FILTER_SANITIZE_ENCODED,
    );
 
    $myInputs = filter_var_array($POST, $args);
 
-   foreach ($POST as $cle => $valeur) {
+   foreach ($myInputs as $cle => $valeur) {
       $resto[$cle] = $valeur;
       if(!in_array($cle, $fillable)){
          return false;
       }
 
-      if(floatval($value))
-         $resto[$key] = floatval($value);
+      if($valeur === false){
+         return false;
+      }else{
+         $resto[$cle] = htmlspecialchars($valeur);
+      }
    }
 
    return $resto;
