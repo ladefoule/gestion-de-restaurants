@@ -1,15 +1,12 @@
-<?php 
-// Dans le résultat de la requète il n'y a qu'un seul resto
-foreach ($resultatRequete as $cle => $resto) {
-   // Décalaration dynamique des variables
-   foreach ($resto as $cle => $valeur) {
-      $$cle = $valeur;
-   }
+<?php
+// Décalaration dynamique des variables
+foreach ($resto as $cle => $valeur) {
+   $$cle = $valeur;
 }
 
 foreach ($fillable as $valeur) {
    if(isset($$valeur) == false)
-      $$valeur = ''; // On initialise toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
+      $$valeur = ''; // On crée toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
 }
 ?>
 <div class="row flex-wrap centre p-4">
@@ -50,8 +47,8 @@ foreach ($fillable as $valeur) {
             </div>
             
             <?php
-            if(isset($_GET['id'])){
-               $id = $_GET['id'];
+            if(isset($url[1])){
+               $id = $url[1];
                echo "<input type=\"hidden\" name='maj'>";
                echo "<input type=\"hidden\" name=\"id\" value=\"$id\">";
             }

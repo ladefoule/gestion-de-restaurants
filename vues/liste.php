@@ -1,11 +1,11 @@
 <div class="row centre">
-   <table class="table table-striped table-dark" style="max-width:800px">
+   <table class="table table-striped table-secondary" style="max-width:800px">
       <thead>
          <tr>
             <th scope="col">#</th>
-            <th scope="col"><a href="<?= SITE ?>liste/nom/asc/">Nom</a></th>
+            <th scope="col"><a href="<?= SITE ?>liste/nom/desc/">Nom</a></th>
             <th scope="col"><a href="<?= SITE ?>liste/cuisine/asc/">Cuisine</a></th>
-            <th scope="col"><a href="<?= SITE ?>liste/tarif_min/asc/">Tarif</a></th>
+            <th scope="col"><a href="<?= SITE ?>liste/tarif_min/desc/">Tarif</a></th>
             <th scope="col">Modifier</th>
             <th scope="col">Supprimer</th>
          </tr>
@@ -28,7 +28,7 @@
             echo '<br>';
             echo "<tr>";
             echo "<th scope='row'>$i</th>";
-            echo "<td><a href='". SITE ."fiche/$id'>$nom</a></td>";
+            echo "<td align='left'><a href='". SITE ."fiche/$id'>$nom</a></td>";
             echo "<td>$cuisine</td>";
             echo "<td>$tarif</td>";
             echo "<td><a href='". SITE ."edit/$id'><i class='fas fa-edit'></i></a></td></td>";

@@ -15,6 +15,9 @@
 
 <body>
    <div class="container">
+      <!-- <div style="background:url('/php/gestion-de-restaurants/img/fond.jpg');height:200px;background-position:-300px">
+         
+      </div> -->
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -27,9 +30,9 @@
                <li class="nav-item">
                   <a class="nav-link" href="<?= SITE ?>ajout">Ajout</a>
                </li>
-               <!-- <li class="nav-item">
-                  <a class="nav-link" href="#">Pricing</a>
-               </li> -->
+               <li class="nav-item">
+                  <a class="nav-link" href="<?= SITE ?>ajout/faker">Ajout (faker)</a>
+               </li>
             </ul>
          </div>
       </nav>

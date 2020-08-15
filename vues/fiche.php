@@ -8,7 +8,7 @@ foreach ($resultatRequete as $cle => $resto) {
 }
 ?>
 <div class="row centre">
-   <div class="card w-50 p-3">
+   <div class="card p-3" style="max-width:600px">
       <a style="position:absolute;right:-2px;top:-5px" href="<?php echo SITE .'edit/'.$id ?>"><i class='fas fa-edit'></i></a>
       <img src="http://lorempixel.com/600/400/food" class="card-img-top" alt="...">
       <div class="card-body">

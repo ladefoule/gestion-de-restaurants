@@ -46,6 +46,22 @@ function verifInputs(array $POST, array $fillable)
    return $resto;
 }
 
+function genererRestoFaker()
+{
+   $faker = Faker\Factory::create('fr_FR');
+   $resto['nom'] = $faker->company;
+   $resto['tel'] = $faker->PhoneNumber;
+   $resto['site'] = 'http://'.$faker->domainName;
+   $resto['tarif_min'] = rand(1, 10);
+   $resto['tarif_max'] = rand(11, 50);
+   $resto['longitude'] = $faker->randomFloat($nbMaxDecimals = 10, $min = -90, $max = 90) ;
+   $resto['latitude'] = $faker->randomFloat($nbMaxDecimals = 10, $min = -90, $max = 90) ;
+   $resto['presentation'] = $faker->realText($maxNbChars = 400, $indexSize = 2);
+   $resto['adresse'] = $faker->address;
+
+   return $resto;
+}
+
 spl_autoload_register(function ($class_name) {
    if(file_exists('modeles/'.$class_name . '.php'))
       require_once 'modeles/'.$class_name . '.php';

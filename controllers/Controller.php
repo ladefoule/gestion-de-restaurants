@@ -49,7 +49,13 @@ class Controller
    {
       $restos = $array['restos'];
       $fillable = $array['fillable'];
-      $resultatRequete = [];
+      $resto = [];
+
+      // Si le mot faker est present dans l'url alors on génère un resto
+      $url = $array['requeteGET'];
+      $url = explode('/', $url);
+      if( in_array('faker', $url) )
+         $resto = genererRestoFaker();
 
       // Si on accède pour la 1ère fois à la page d'ajout (formulaire)
       if(count($array['requetePOST']) == 0){
@@ -81,9 +87,11 @@ class Controller
       {
          $id = $url[1];
          $resultatRequete = $restos->fiche($id);
+         foreach ($resultatRequete as $value)
+            $resto = $value;
 
          // On accède pour la 1ère fois à la page edit
-         if(!isset($requetePOST['nom'])){
+         if(!isset($requetePOST['id'])){
             require  './vues/form.php';
 
          // Validation du formulaire depuis la page edit
