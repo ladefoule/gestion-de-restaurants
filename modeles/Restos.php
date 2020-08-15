@@ -3,8 +3,8 @@
 class Restos
 {
    private $restos;
-   private $fillable = ['nom', 'site', 'presentation', 'tarif_min', 'tarif_max', 'tel', 'longitude', 'adresse'];
-   private $fillableAdresse = ['nom', 'numrue', 'cp', 'nomrue', 'ville', 'pays', 'latitude', 'longitude'];
+   private $fillable = ['nom', 'site', 'presentation', 'tarif_min', 'tarif_max', 'tel'];
+   private $fillableAdresse = ['cp', 'rue', 'ville', 'pays', 'latitude', 'longitude'];
 
    public function __construct()
    {
@@ -78,7 +78,7 @@ class Restos
    {
       $unsetKeys = [];
       // Les clés qui ne sont pas saisies seront supprimés du document
-      foreach ($this->fillable as $value) {
+      foreach ($this->fillableAdresse as $value) {
          if (in_array($value, array_keys($resto)) == false)
             $unsetKeys[$value] = '';
       }

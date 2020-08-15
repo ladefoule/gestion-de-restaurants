@@ -1,19 +1,3 @@
-<?php
-// Décalaration dynamique des variables
-foreach ($resto as $cle => $valeur) {
-   $$cle = $valeur;
-}
-
-if(isset($adresse) == false){
-   $adresse = [];
-}
-
-foreach ($fillableAdresse as $valeur) {
-   if(isset($$valeur) == false)
-      $$valeur = isset($adresse[$valeur]) ? $adresse[$valeur] : '';
-}
-
-?>
 <div class="row flex-wrap centre p-4">
    <h1>Création/MAJ de restaurant</h1>
    <div class="col-12 centre p-1">
@@ -21,20 +5,15 @@ foreach ($fillableAdresse as $valeur) {
          <div class="form-row justify-content-center pb-3">
             <div class="col-6 mb-3">
                <label for="nom">Nom</label>
-               <input type="text" name="nom" class="form-control " value="<?php echo $nom ?>">
-
-            </div>
-            <div class="col-6 mb-3">
-               <label for="numrue">Numéro</label>
-               <input type="number" name="numrue" class="form-control " value="<?php echo $numrue ?>">
+               <input type="text" class="form-control " value="<?php echo $nom ?>" disabled>
 
             </div>
          </div>
          
          <div class="form-row justify-content-center pb-3">
             <div class="col-6 mb-3">
-               <label for="nomrue">Rue</label>
-               <input type="text" name="nomrue" class="form-control " value="<?php echo $nomrue ?>">
+               <label for="rue">Rue</label>
+               <input type="text" name="rue" class="form-control " value="<?php echo $rue ?>">
 
             </div>
             <div class="col-6 mb-3">

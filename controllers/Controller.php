@@ -14,6 +14,15 @@ class Controller
          foreach ($resultatRequete as $value)
             $resto = $value;
 
+         // Décalaration dynamique des variables
+         foreach ($resto as $cle => $valeur)
+            $$cle = $valeur;
+
+         // On crée toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
+         foreach ($fillable as $valeur)
+            if(isset($$valeur) == false)
+               $$valeur = ''; 
+         
          require  './vues/fiche.php';
       }
    }
@@ -63,11 +72,19 @@ class Controller
       // Si le mot faker est present dans l'url alors on génère un resto
       $url = $array['requeteGET'];
       $url = explode('/', $url);
-      if( in_array('faker', $url) )
+      if( in_array('faker', $url) ){
          $resto = genererRestoFaker();
-
+         $restos->ajout($resto);
+         header('Location:'.SITE.'liste');
+         return;
+      }
       // Si on accède pour la 1ère fois à la page d'ajout (formulaire)
       if(count($array['requetePOST']) == 0){
+         // On crée toutes les variables présentes dans fillable
+         foreach ($fillable as $valeur) {
+            if(isset($$valeur) == false)
+               $$valeur = '';
+         }
          require  './vues/form.php';
 
       // Si on reçoit des infos venant du formulaire (POST)
@@ -101,6 +118,16 @@ class Controller
 
          // On accède pour la 1ère fois à la page edit
          if(!isset($requetePOST['id'])){
+            // Décalaration dynamique des variables
+            foreach ($resto as $cle => $valeur) {
+               $$cle = $valeur;
+            }
+
+            // On crée toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
+            foreach ($fillable as $valeur) {
+               if(isset($$valeur) == false)
+                  $$valeur = '';
+            }
             require  './vues/form.php';
 
          // Validation du formulaire depuis la page edit
@@ -135,6 +162,17 @@ class Controller
 
          // On accède pour la 1ère fois à la page edit
          if(!isset($requetePOST['id'])){
+            // Décalaration dynamique des variables
+            foreach ($resto as $cle => $valeur)
+               $$cle = $valeur;
+
+            if(isset($adresse) == false)
+               $adresse = [];
+
+            foreach ($fillableAdresse as $valeur)
+               if(isset($$valeur) == false)
+                  $$valeur = isset($adresse[$valeur]) ? $adresse[$valeur] : '';
+            
             require  './vues/form-adresse.php';
 
          // Validation du formulaire depuis la page edit

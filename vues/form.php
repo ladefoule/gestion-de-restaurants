@@ -1,14 +1,3 @@
-<?php
-// Décalaration dynamique des variables
-foreach ($resto as $cle => $valeur) {
-   $$cle = $valeur;
-}
-
-foreach ($fillable as $valeur) {
-   if(isset($$valeur) == false)
-      $$valeur = ''; // On crée toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
-}
-?>
 <div class="row flex-wrap centre p-4">
    <h1>Création/MAJ de restaurant</h1>
    <div class="col-12 centre p-1">
