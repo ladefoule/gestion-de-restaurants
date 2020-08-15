@@ -1,32 +1,11 @@
 <?php
 
-require_once 'htmlpurifier/library/HTMLPurifier.auto.php';
-require_once 'vendor/autoload.php';
-require_once 'config.php';
-require_once 'fonctions.php';
+class Controller
+{
+   public function fiche()
+   {
+      $restos = new Restos();
 
-$Parsedown = new Parsedown();
-$Parsedown->setMarkupEscaped(true);
-$purifier = new HTMLPurifier();
-
-$url = $_GET['url'];
-$url = explode('/', $url);
-
-$route = $url[0];
-
-$routes = ['fiche', 'ajout', 'edit', 'delete', 'liste'];
-$action = in_array($route, $routes) ? $route : 'erreur404';
-
-$nom = $site = $tel = $presentation = $tarif_min = $tarif_max = $longitude = $latitude = '';
-
-Controller::$action();
-
-$restos = new Restos();
-$fillable = $restos->getFillable();
-/*
-switch ($action) {
-   // FICHE D'UN RESTO
-   case 'fiche':
       if (isset($url[1])) {
          $id = $url[1];
          $resultatRequete = $restos->fiche($id);
@@ -35,10 +14,12 @@ switch ($action) {
          require 'fiche.php';
          $contenu = ob_get_clean();
       }
-      break;
+   }
 
-   // LISTE DE TOUS LES RESTOS
-   case 'liste':
+   public function liste()
+   {
+      $restos = new Restos();
+
       if(isset($url[1]) && isset($url[2])){
          $orderby = $url[1];
          $sens = $url[2];
@@ -51,10 +32,12 @@ switch ($action) {
       ob_start();
       require 'liste.php';
       $contenu = ob_get_clean();
-      break;
+   }
 
-   // SUPPRESSION DE RESTO
-   case 'delete':
+   public function delete()
+   {
+      $restos = new Restos();
+
       if (isset($url[1])) {
          $id = $url[1];
          $restos->delete($id);
@@ -64,10 +47,12 @@ switch ($action) {
       ob_start();
       require 'liste.php';
       $contenu = ob_get_clean();
-      break;
+   }
 
-   // AJOUT D'UN RESTO
-   case 'ajout':
+   public function ajout()
+   {
+      $restos = new Restos();
+      $fillable = $restos->getFillable();
       $resultatRequete = [];
       // Si on accède pour la 1ère fois à la page d'ajout (formulaire)
       if(!isset($_POST['nom'])){
@@ -92,10 +77,12 @@ switch ($action) {
          require 'liste.php';
          $contenu = ob_get_clean();
       }
-      break;
+   }
 
-   // MAJ DES INFOS D'UN RESTO
-   case 'edit':
+   public function edit()
+   {
+      $restos = new Restos();
+      $fillable = $restos->getFillable();
       if (isset($url[1]))
       {
          $id = $url[1];
@@ -126,15 +113,12 @@ switch ($action) {
             $contenu = ob_get_clean();
          }
       }
-      break;
-         
-   default:
+   }
+
+   public function erreur404()
+   {
       ob_start();
       echo "Vous n'avez pas accès à cette page.";
       $contenu = ob_get_clean();
-      break;
-}*/
-
-require 'layout.php';
-
-
+   }
+}
