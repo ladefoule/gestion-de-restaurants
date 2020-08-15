@@ -1,10 +1,12 @@
 <?php
-// Dans le résultat de la requète il n'y a qu'un seul resto
-foreach ($resultatRequete as $cle => $resto) {
-   // Décalaration dynamique des variables
-   foreach ($resto as $cle => $valeur) {
-      $$cle = $valeur;
-   }
+// Décalaration dynamique des variables
+foreach ($resto as $cle => $valeur) {
+   $$cle = $valeur;
+}
+
+foreach ($fillable as $valeur) {
+   if(isset($$valeur) == false)
+      $$valeur = ''; // On crée toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
 }
 ?>
 <div class="row centre">
@@ -25,8 +27,22 @@ foreach ($resultatRequete as $cle => $resto) {
                if($tarif_max != '' && $tarif_min != '')
                   echo "Tarif : $tarif_min-$tarif_max €<br>";
 
-               if($longitude != '' && $latitude != '')
-                  echo 'Localisattion : <a href="https://www.openstreetmap.org/#map=19/'.$latitude.'/'.$longitude.'" target="_blank"><i class="fas fa-globe-europe"></i></a>';
+               if($adresse != '')
+               {
+                  foreach ($fillableAdresse as $valeur) {
+                     if(isset($$valeur) == false)
+                        $$valeur = isset($adresse[$valeur]) ? $adresse[$valeur] : '';
+                  }
+
+                  echo '<br>Adresse : <a href="'.SITE.'editadresse/'.$id.'"><i class="fas fa-edit"></i></a><br>';
+                  echo $numrue . ' ' . $nomrue . '<br>';
+                  echo $cp . ' ' . $ville . '<br>';
+                  echo $pays . '<br>';
+                  if($longitude != '' && $latitude != '')
+                     echo 'Localisattion : <a href="https://www.openstreetmap.org/#map=19/'.$latitude.'/'.$longitude.'" target="_blank"><i class="fas fa-globe-europe"></i></a>';
+               }
+
+               
 
             echo '</p>';
             if($site != '')

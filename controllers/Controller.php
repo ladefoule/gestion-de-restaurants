@@ -4,12 +4,15 @@ class Controller
    public static function fiche(array $array)
    {
       $restos = $array['restos'];
-      $fillable = $array['fillable'];
+      $fillable = $restos->getFillable();
+      $fillableAdresse = $restos->getFillableAdresse();
       $url = explode('/', $array['requeteGET']);
 
       if (isset($url[1])) {
          $id = $url[1];
          $resultatRequete = $restos->fiche($id);
+         foreach ($resultatRequete as $value)
+            $resto = $value;
 
          require  './vues/fiche.php';
       }
@@ -18,16 +21,22 @@ class Controller
    public static function liste(array $array)
    {
       $restos = $array['restos'];
+      $fillable = $restos->getFillable();
       $url = explode('/', $array['requeteGET']);
 
       if(isset($url[1]) && isset($url[2])){
          $orderby = $url[1];
+         if(in_array($orderby, $fillable) == false){
+            Controller::erreur404();
+            return;
+         }
+            
          $sens = $url[2];
          $sens = ($sens == 'asc') ? -1 : 1;
 
-         $resultatRequete = $restos->liste($orderby, $sens);
+         $listeRestos = $restos->liste($orderby, $sens);
       }else
-         $resultatRequete = $restos->liste();
+         $listeRestos = $restos->liste();
 
       require './vues/liste.php';
    }
@@ -48,7 +57,7 @@ class Controller
    public static function ajout(array $array)
    {
       $restos = $array['restos'];
-      $fillable = $array['fillable'];
+      $fillable = $restos->getFillable();
       $resto = [];
 
       // Si le mot faker est present dans l'url alors on génère un resto
@@ -67,7 +76,7 @@ class Controller
          $resto = verifInputs($requete, $fillable);
          // Si la validation ne passe pas, on renvoie un message d'erreur
          if($resto == false){
-            echo '<div class="alert alert-danger" role="alert"> Echec de l\'ajout </div>';
+            Controller::erreur404();
             return;
          }
       
@@ -79,7 +88,7 @@ class Controller
    public static function edit(array $array)
    {
       $restos = $array['restos'];
-      $fillable = $array['fillable'];
+      $fillable = $restos->getFillable();
       $url = explode('/', $array['requeteGET']);
       $requetePOST = $array['requetePOST'];
 
@@ -100,7 +109,7 @@ class Controller
 
             // Si la validation ne passe pas, on renvoie un message d'erreur
             if($resto == false){
-               echo '<div class="alert alert-danger" role="alert"> Echec de la mise à jour. </div>';
+               Controller::erreur404();
                return;
             }
          
@@ -110,8 +119,42 @@ class Controller
       }
    }
 
+   public static function editadresse(array $array)
+   {
+      $restos = $array['restos'];
+      $fillableAdresse = $restos->getFillableAdresse();
+      $url = explode('/', $array['requeteGET']);
+      $requetePOST = $array['requetePOST'];
+
+      if (isset($url[1]))
+      {
+         $id = $url[1];
+         $resultatRequete = $restos->fiche($id);
+         foreach ($resultatRequete as $value)
+            $resto = $value;
+
+         // On accède pour la 1ère fois à la page edit
+         if(!isset($requetePOST['id'])){
+            require  './vues/form-adresse.php';
+
+         // Validation du formulaire depuis la page edit
+         }else{
+            $resto = verifInputsAdresse($requetePOST, $fillableAdresse);
+
+            // Si la validation ne passe pas, on renvoie un message d'erreur
+            if($resto == false){
+               Controller::erreur404();
+               return;
+            }
+         
+            $restos->editadresse($id, $resto);
+            header('Location:'.SITE.'fiche/'.$id);
+         }
+      }
+   }
+
    public static function erreur404()
    {
-      echo "Vous n'avez pas accès à cette page.";
+      echo "Erreur 404 : Une erreur s'est produite !";
    }
 }

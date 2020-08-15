@@ -3,7 +3,8 @@
 class Restos
 {
    private $restos;
-   private $fillable = ['nom', 'site', 'presentation', 'tarif_min', 'tarif_max', 'tel', 'longitude', 'latitude', 'cuisine'];
+   private $fillable = ['nom', 'site', 'presentation', 'tarif_min', 'tarif_max', 'tel', 'longitude', 'adresse'];
+   private $fillableAdresse = ['nom', 'numrue', 'cp', 'nomrue', 'ville', 'pays', 'latitude', 'longitude'];
 
    public function __construct()
    {
@@ -15,6 +16,11 @@ class Restos
    public function getFillable()
    {
       return $this->fillable;
+   }
+
+   public function getFillableAdresse()
+   {
+      return $this->fillableAdresse;
    }
 
    /**
@@ -49,9 +55,31 @@ class Restos
     */
    public function edit(string $id, array $resto)
    {
+      $unsetKeys = [];
       // Les clés qui ne sont pas saisies seront supprimés du document
       foreach ($this->fillable as $value) {
-         if(in_array($value, array_keys($resto)) == false)
+         if (in_array($value, array_keys($resto)) == false)
+            $unsetKeys[$value] = '';
+      }
+
+      $_id = new MongoDB\BSON\ObjectId($id);
+      $this->restos->updateOne(['_id' => $_id], ['$set' => $resto]);
+      $this->restos->updateOne(['_id' => $_id], ['$unset' => $unsetKeys]);
+   }
+
+   /**
+    * Modification de l'adresse d'un resto
+    *
+    * @param string $id
+    * @param array $resto
+    * @return void
+    */
+   public function editadresse(string $id, array $resto)
+   {
+      $unsetKeys = [];
+      // Les clés qui ne sont pas saisies seront supprimés du document
+      foreach ($this->fillable as $value) {
+         if (in_array($value, array_keys($resto)) == false)
             $unsetKeys[$value] = '';
       }
 
@@ -81,9 +109,9 @@ class Restos
     */
    public function liste($orderby = '', int $sens = 1)
    {
-      if($orderby == '')
+      if ($orderby == '')
          return $this->restos->find();
-      
+
       return $this->restos->find([], ['sort' => [$orderby => $sens]]);
    }
 }
