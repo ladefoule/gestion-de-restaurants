@@ -17,36 +17,69 @@ class Restos
       return $this->fillable;
    }
 
-   public function init($resto)
-   {
-      $this->resto = $resto;
-   }
-
-
-   public function ajout($resto)
+   /**
+    * Ajout d'un resto
+    *
+    * @param array $resto
+    * @return void
+    */
+   public function ajout(array $resto)
    {
       $this->restos->insertOne($resto);
    }
 
-   public function delete($id)
+   /**
+    * Suppression d'un resto
+    *
+    * @param string $id
+    * @return void
+    */
+   public function delete(string $id)
    {
       $_id = new MongoDB\BSON\ObjectId($id);
       $this->restos->deleteOne(['_id' => $_id]);
    }
 
-   public function edit($id, $resto)
+   /**
+    * Modification d'un resto
+    *
+    * @param string $id
+    * @param array $resto
+    * @return void
+    */
+   public function edit(string $id, array $resto)
    {
+      // Les clés qui ne sont pas saisies seront supprimés du document
+      foreach ($this->fillable as $value) {
+         if(in_array($value, array_keys($resto)) == false)
+            $unsetKeys[$value] = '';
+      }
+
       $_id = new MongoDB\BSON\ObjectId($id);
       $this->restos->updateOne(['_id' => $_id], ['$set' => $resto]);
+      $this->restos->updateOne(['_id' => $_id], ['$unset' => $unsetKeys]);
    }
 
-   public function fiche($id)
+   /**
+    * Renvoie les infos d'un resto
+    *
+    * @param string $id
+    * @return array
+    */
+   public function fiche(string $id)
    {
       $_id = new MongoDB\BSON\ObjectId($id);
       return $this->restos->find(['_id' => $_id]);
    }
 
-   public function liste($orderby = '', $sens = '')
+   /**
+    * Liste de tous les restos
+    *
+    * @param string $orderby
+    * @param int $sens
+    * @return array
+    */
+   public function liste($orderby = '', int $sens = 1)
    {
       if($orderby == '')
          return $this->restos->find();

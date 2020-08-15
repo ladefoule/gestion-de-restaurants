@@ -16,22 +16,30 @@ function verifInputs(array $POST, array $fillable)
       'tarif_min'      => array('filter' => FILTER_VALIDATE_INT,
                           'options' => array('min_range' => 0, 'max_range' => 100)),
       'tarif_max'   => array('filter' => FILTER_VALIDATE_INT,
-                          'options' => array('min_range' => 0, 'max_range' => 20)),
-      'tel'    => FILTER_SANITIZE_ENCODED,
+                          'options' => array('min_range' => 0, 'max_range' => 100)),
+      'latitude'      => FILTER_VALIDATE_FLOAT,
+      'longitude'      => FILTER_VALIDATE_FLOAT,
+      'tel'    => FILTER_SANITIZE_SPECIAL_CHARS,
+      'site'    => FILTER_VALIDATE_URL,
+      'presentation'    => FILTER_SANITIZE_SPECIAL_CHARS,
    );
 
    $myInputs = filter_var_array($POST, $args);
+   var_dump($myInputs);
+   $floatKeys = ['longitude', 'latitude'];
+   $intKeys = ['tarif_min', 'tarif_max'];
 
    foreach ($myInputs as $cle => $valeur) {
-      $resto[$cle] = $valeur;
-      if(!in_array($cle, $fillable)){
+      if(in_array($cle, $fillable) == false)
          return false;
-      }
 
-      if($valeur === false){
-         return false;
-      }else{
-         $resto[$cle] = htmlspecialchars($valeur);
+      if($valeur !== false && $valeur != ''){
+         if(in_array($cle, $floatKeys))
+            echo $resto[$cle] = floatval($valeur);
+         else if(in_array($cle, $intKeys))
+            echo $resto[$cle] = intval($valeur);
+         else
+            echo $resto[$cle] = htmlspecialchars($valeur);
       }
    }
 
