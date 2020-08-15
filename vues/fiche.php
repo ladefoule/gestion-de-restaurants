@@ -9,12 +9,13 @@ foreach ($resultatRequete as $cle => $resto) {
 ?>
 <div class="row centre">
    <div class="card w-50 p-3">
+      <a style="position:absolute;right:-2px;top:-5px" href="<?php echo SITE .'edit/'.$id ?>"><i class='fas fa-edit'></i></a>
       <img src="http://lorempixel.com/600/400/food" class="card-img-top" alt="...">
       <div class="card-body">
          <h5 class="card-title font-weight-bold h1"><?= $nom ?></h5>
          <?php
             if($presentation != '')
-               echo '<textarea class="card-text" id="presentation">'.$purifier->purify($presentation).'</textarea>';
+               echo '<textarea class="card-text" id="presentation">'.$presentation.'</textarea>';
             
             echo '<p>';
 

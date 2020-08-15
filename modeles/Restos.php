@@ -3,7 +3,7 @@
 class Restos
 {
    private $restos;
-   private $fillable = ['nom', 'site', 'presentation', 'tarif_min', 'tarif_max', 'tel', 'longitude', 'latitude'];
+   private $fillable = ['nom', 'site', 'presentation', 'tarif_min', 'tarif_max', 'tel', 'longitude', 'latitude', 'cuisine'];
 
    public function __construct()
    {

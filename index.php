@@ -17,12 +17,15 @@ $route = $url[0];
 $routes = ['fiche', 'ajout', 'edit', 'delete', 'liste'];
 $action = in_array($route, $routes) ? $route : 'erreur404';
 
-$nom = $site = $tel = $presentation = $tarif_min = $tarif_max = $longitude = $latitude = '';
-
-Controller::$action();
-
 $restos = new Restos();
 $fillable = $restos->getFillable();
+
+ob_start();
+Controller::$action(['restos' => $restos, 'fillable' => $fillable, 'requetePOST' => $_POST, 'requeteGET' => $_GET['url']]);
+$contenu = ob_get_clean();
+
+require './vues/layout.php';
+
 /*
 switch ($action) {
    // FICHE D'UN RESTO
@@ -134,7 +137,5 @@ switch ($action) {
       $contenu = ob_get_clean();
       break;
 }*/
-
-require 'layout.php';
 
 

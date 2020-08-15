@@ -6,6 +6,11 @@ foreach ($resultatRequete as $cle => $resto) {
       $$cle = $valeur;
    }
 }
+
+foreach ($fillable as $valeur) {
+   if(isset($$valeur) == false)
+      $$valeur = ''; // On initialise toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
+}
 ?>
 <div class="row flex-wrap centre p-4">
    <h1>Création/MAJ de restaurant</h1>
@@ -27,7 +32,7 @@ foreach ($resultatRequete as $cle => $resto) {
          <div class="form-row justify-content-center pb-3">
             <div class="col mb-3">
                <label for="presentation">Présentation</label>
-               <textarea cols="40" rows="3" name="presentation" class="form-control " id="presentation" placeholder=""><?php echo $purifier->purify($presentation) ?></textarea>
+               <textarea cols="40" rows="3" name="presentation" class="form-control " id="presentation" placeholder=""><?php echo $presentation ?></textarea>
 
             </div>
          </div>

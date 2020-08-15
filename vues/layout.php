@@ -10,7 +10,7 @@
    <link rel="stylesheet" href="<?= SITE ?>style.css">
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-   <title>Création de restaurant</title>
+   <title>Gestion de restaurants - MOUSSA</title>
 </head>
 
 <body>
