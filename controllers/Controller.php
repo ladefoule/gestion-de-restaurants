@@ -21,8 +21,12 @@ class Controller
          // On crée toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
          foreach ($fillable as $valeur)
             if(isset($$valeur) == false)
-               $$valeur = ''; 
+               $$valeur = ($valeur == 'cuisines') ? [] : ''; 
          
+         $listeCuisines = '';
+         foreach ($cuisines as $key => $value)
+            $listeCuisines = $listeCuisines . ($listeCuisines == '' ? '' : '/') . $value;
+            
          require  './vues/fiche.php';
       }
    }
@@ -85,6 +89,7 @@ class Controller
             if(isset($$valeur) == false)
                $$valeur = '';
          }
+         $listeCuisines = '';
          require  './vues/form.php';
 
       // Si on reçoit des infos venant du formulaire (POST)
@@ -119,15 +124,18 @@ class Controller
          // On accède pour la 1ère fois à la page edit
          if(!isset($requetePOST['id'])){
             // Décalaration dynamique des variables
-            foreach ($resto as $cle => $valeur) {
+            foreach ($resto as $cle => $valeur)
                $$cle = $valeur;
-            }
 
             // On crée toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
-            foreach ($fillable as $valeur) {
+            foreach ($fillable as $valeur)
                if(isset($$valeur) == false)
-                  $$valeur = '';
-            }
+                  $$valeur = ($valeur == 'cuisines') ? [] : ''; 
+
+            $listeCuisines = '';
+            foreach ($cuisines as $key => $value)
+               $listeCuisines = $listeCuisines . ($listeCuisines == '' ? '' : '/') . $value;
+
             require  './vues/form.php';
 
          // Validation du formulaire depuis la page edit

@@ -51,6 +51,14 @@
 
             </div>
          </div>
+
+         <div class="form-row justify-content-center pb-3">
+            <div class="col-12 mb-3">
+               <label for="cuisines">Cuisines</label>
+               <input type="text" name="cuisines" class="form-control " value="<?php echo $listeCuisines ?>" placeholder="Cuisine1/Cuisine2/Cuisine3">
+
+            </div>
+         </div>
          <div class="centre mt-4"><button class="btn btn-primary px-5" type="submit">Valider</button></div>
       </form>
    </div>

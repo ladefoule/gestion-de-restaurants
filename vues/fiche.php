@@ -10,11 +10,14 @@
             
             echo '<p>';
 
+            if($listeCuisines != '')
+               echo "<b>Cuisines :</b> $listeCuisines <br><br>";
+
             if($tel != '')
-               echo "Tél : $tel <br>";
+               echo "<b>Tél :</b> $tel <br>";
 
             if($tarif_max != '' && $tarif_min != '')
-               echo "Tarif : $tarif_min-$tarif_max €<br>";
+               echo "<b>Tarif :</b> $tarif_min-$tarif_max €<br><br>";
 
             if($adresse != '')
             {
@@ -22,7 +25,7 @@
                   if(isset($$valeur) == false)
                      $$valeur = isset($adresse[$valeur]) ? $adresse[$valeur] : '';
                }
-               echo '<br>Adresse : <a href="'.SITE.'editadresse/'.$id.'"><i class="fas fa-edit"></i></a><br>';
+               echo '<b>Adresse :</b> <a href="'.SITE.'editadresse/'.$id.'"><i class="fas fa-edit"></i></a><br>';
                echo $rue . '<br>';
                echo $cp . ' ' . $ville . '<br>';
                echo $pays . '<br>';

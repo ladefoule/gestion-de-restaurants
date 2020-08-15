@@ -20,6 +20,7 @@ function verifInputs(array $POST, array $fillable)
       'tel'    => FILTER_SANITIZE_SPECIAL_CHARS,
       'site'    => FILTER_VALIDATE_URL,
       'presentation'    => FILTER_SANITIZE_SPECIAL_CHARS,
+      'cuisines'    => FILTER_SANITIZE_SPECIAL_CHARS,
    );
 
    $myInputs = filter_var_array($POST, $args);
@@ -35,8 +36,13 @@ function verifInputs(array $POST, array $fillable)
       if($valeur !== false && $valeur != ''){
          if(in_array($cle, $intKeys))
             $resto[$cle] = intval($valeur);
-         else
-            $resto[$cle] = htmlspecialchars($valeur);
+         else{
+            if($cle == 'cuisines'){
+               $valeur = explode('/', htmlspecialchars($valeur));
+               $resto[$cle] = $valeur;
+            }else
+               $resto[$cle] = htmlspecialchars($valeur);
+         }
       }
    }
 
@@ -95,6 +101,7 @@ function genererRestoFaker()
    $resto['tarif_min'] = rand(1, 10);
    $resto['tarif_max'] = rand(11, 50);
    $resto['presentation'] = $faker->realText($maxNbChars = 400, $indexSize = 2);
+   $resto['cuisines'] = [$faker->city, $faker->city, $faker->city, $faker->city];
 
    $resto['adresse']['rue'] = $faker->streetAddress;
    $resto['adresse']['cp'] = rand(10000, 99999);

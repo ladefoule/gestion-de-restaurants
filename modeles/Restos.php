@@ -3,7 +3,7 @@
 class Restos
 {
    private $restos;
-   private $fillable = ['nom', 'site', 'presentation', 'tarif_min', 'tarif_max', 'tel'];
+   private $fillable = ['nom', 'site', 'presentation', 'tarif_min', 'tarif_max', 'tel', 'cuisines'];
    private $fillableAdresse = ['cp', 'rue', 'ville', 'pays', 'latitude', 'longitude'];
 
    public function __construct()
@@ -64,7 +64,9 @@ class Restos
 
       $_id = new MongoDB\BSON\ObjectId($id);
       $this->restos->updateOne(['_id' => $_id], ['$set' => $resto]);
-      $this->restos->updateOne(['_id' => $_id], ['$unset' => $unsetKeys]);
+
+      if($unsetKeys != [])
+         $this->restos->updateOne(['_id' => $_id], ['$unset' => $unsetKeys]);
    }
 
    /**
