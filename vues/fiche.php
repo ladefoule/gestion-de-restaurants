@@ -1,7 +1,7 @@
 <div class="row centre">
    <div class="card p-3" style="max-width:600px">
       <a style="position:absolute;right:-2px;top:-5px" href="<?php echo SITE .'edit/'.$id ?>"><i class='fas fa-edit'></i></a>
-      <img src="http://lorempixel.com/600/400/food" class="card-img-top" alt="...">
+      <img src="<?php echo SITE . 'img/lorempixel-' . rand(1, 10) . '.jpg' ?>" class="card-img-top" alt="...">
       <div class="card-body">
          <h5 class="card-title font-weight-bold h1"><?= $nom ?></h5>
          <?php

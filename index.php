@@ -16,13 +16,25 @@ $url = $_GET['url'];
 $url = explode('/', $url);
 $route = $url[0];
 
-$routes = ['fiche', 'ajout', 'edit', 'editadresse', 'delete', 'liste'];
-$action = in_array($route, $routes) ? $route : 'erreur404';
+$controller = 'ErreurController';
+$action = 'erreur404';
+
+$routes = ['fiche', 'ajout', 'edit', 'delete', 'liste'];
+if(in_array($route, $routes)){
+   $controller = 'RestoController';
+   $action = $route;
+}
+
+$routes = ['editadresse'];
+if(in_array($route, $routes)){
+   $controller = 'AdresseController';
+   $action = $route;
+}
 
 $restos = new Restos();
 
 ob_start();
-Controller::$action(['restos' => $restos, 'requetePOST' => $_POST, 'requeteGET' => $_GET['url']]);
+$controller::$action(['restos' => $restos, 'requetePOST' => $_POST, 'requeteGET' => $_GET['url']]);
 $contenu = ob_get_clean();
 
 require './vues/layout.php';

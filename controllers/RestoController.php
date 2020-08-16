@@ -1,6 +1,12 @@
 <?php
-class Controller
+class RestoController
 {
+   /**
+    * Accès à la fiche d'un resto
+    *
+    * @param array $array
+    * @return void
+    */
    public static function fiche(array $array)
    {
       $restos = $array['restos'];
@@ -11,6 +17,11 @@ class Controller
       if (isset($url[1])) {
          $id = $url[1];
          $resultatRequete = $restos->fiche($id);
+         if($resultatRequete == false){
+            header('Location:'.SITE.'erreur404');
+            return;
+         }
+
          foreach ($resultatRequete as $value)
             $resto = $value;
 
@@ -28,45 +39,83 @@ class Controller
             $listeCuisines = $listeCuisines . ($listeCuisines == '' ? '' : '/') . $value;
             
          require  './vues/fiche.php';
+         return;
       }
+
+      header('Location:'.SITE.'erreur404');
    }
 
+   /**
+    * Liste de tous les restos + filtres (asc, desc, type de cuisines)
+    *
+    * @param array $array
+    * @return void
+    */
    public static function liste(array $array)
    {
       $restos = $array['restos'];
       $fillable = $restos->getFillable();
       $url = explode('/', $array['requeteGET']);
+      $requetePOST = $array['requetePOST'];
+      $filtre = $projection = [];
+      $choixCuisine = '';
 
       if(isset($url[1]) && isset($url[2])){
          $orderby = $url[1];
          if(in_array($orderby, $fillable) == false){
-            Controller::erreur404();
+            header('Location:'.SITE.'erreur404');
             return;
          }
             
          $sens = $url[2];
          $sens = ($sens == 'asc') ? -1 : 1;
 
-         $listeRestos = $restos->liste($orderby, $sens);
-      }else
-         $listeRestos = $restos->liste();
+         $projection = ['sort' => [$orderby => $sens]];
+      }
+      
+      if(count($requetePOST) != 0 && $requetePOST['choixcuisine'] != ''){
+         $choixCuisine = $requetePOST['choixcuisine'];
+         $filtre = ['cuisines' => $choixCuisine];
+      }
+
+      $listeCuisines = $restos->listeCuisines();
+      $listeRestos = $restos->liste($filtre, $projection);
 
       require './vues/liste.php';
    }
 
+   /**
+    * Suppression d'un resto
+    *
+    * @param array $array
+    * @return void
+    */
    public static function delete(array $array)
    {
       $restos = $array['restos'];
       $url = explode('/', $array['requeteGET']);
 
-      if (isset($url[1])) {
+      if (isset($url[1])) { // Si on a un ID
          $id = $url[1];
-         $restos->delete($id);
+         $resultatRequete = $restos->delete($id);
+         if($resultatRequete == false){
+            header('Location:'.SITE.'erreur404');
+            return;
+         }
+
+         header('Location:'.SITE.'liste');
+         return;
       }
 
-      header('Location:'.SITE.'liste');
+      header('Location:'.SITE.'erreur404');
    }
 
+   /**
+    * Ajout d'un resto manuellement
+    *
+    * @param array $array
+    * @return void
+    */
    public static function ajout(array $array)
    {
       $restos = $array['restos'];
@@ -82,6 +131,7 @@ class Controller
          header('Location:'.SITE.'liste');
          return;
       }
+
       // Si on accède pour la 1ère fois à la page d'ajout (formulaire)
       if(count($array['requetePOST']) == 0){
          // On crée toutes les variables présentes dans fillable
@@ -91,6 +141,7 @@ class Controller
          }
          $listeCuisines = '';
          require  './vues/form.php';
+         return;
 
       // Si on reçoit des infos venant du formulaire (POST)
       }else {
@@ -98,7 +149,7 @@ class Controller
          $resto = verifInputs($requete, $fillable);
          // Si la validation ne passe pas, on renvoie un message d'erreur
          if($resto == false){
-            Controller::erreur404();
+            header('Location:'.SITE.'erreur404');
             return;
          }
       
@@ -107,6 +158,12 @@ class Controller
       }
    }
 
+   /**
+    * Modification d'un resto
+    *
+    * @param array $array
+    * @return void
+    */
    public static function edit(array $array)
    {
       $restos = $array['restos'];
@@ -114,11 +171,16 @@ class Controller
       $url = explode('/', $array['requeteGET']);
       $requetePOST = $array['requetePOST'];
 
-      if (isset($url[1]))
+      if (isset($url[1])) // Si on a un ID
       {
          $id = $url[1];
          $resultatRequete = $restos->fiche($id);
-         foreach ($resultatRequete as $value)
+         if($resultatRequete == false){
+            header('Location:'.SITE.'erreur404');
+            return;
+         }
+
+         foreach ($resultatRequete as $value) // On récupère le resto (fiche($id) renvoie que 1 seul resto)
             $resto = $value;
 
          // On accède pour la 1ère fois à la page edit
@@ -137,6 +199,7 @@ class Controller
                $listeCuisines = $listeCuisines . ($listeCuisines == '' ? '' : '/') . $value;
 
             require  './vues/form.php';
+            return;
 
          // Validation du formulaire depuis la page edit
          }else{
@@ -144,63 +207,16 @@ class Controller
 
             // Si la validation ne passe pas, on renvoie un message d'erreur
             if($resto == false){
-               Controller::erreur404();
+               header('Location:'.SITE.'erreur404');
                return;
             }
          
             $restos->edit($id, $resto);
             header('Location:'.SITE.'fiche/'.$id);
+            return;
          }
       }
-   }
 
-   public static function editadresse(array $array)
-   {
-      $restos = $array['restos'];
-      $fillableAdresse = $restos->getFillableAdresse();
-      $url = explode('/', $array['requeteGET']);
-      $requetePOST = $array['requetePOST'];
-
-      if (isset($url[1]))
-      {
-         $id = $url[1];
-         $resultatRequete = $restos->fiche($id);
-         foreach ($resultatRequete as $value)
-            $resto = $value;
-
-         // On accède pour la 1ère fois à la page edit
-         if(!isset($requetePOST['id'])){
-            // Décalaration dynamique des variables
-            foreach ($resto as $cle => $valeur)
-               $$cle = $valeur;
-
-            if(isset($adresse) == false)
-               $adresse = [];
-
-            foreach ($fillableAdresse as $valeur)
-               if(isset($$valeur) == false)
-                  $$valeur = isset($adresse[$valeur]) ? $adresse[$valeur] : '';
-            
-            require  './vues/form-adresse.php';
-
-         // Validation du formulaire depuis la page edit
-         }else{
-            $resto = verifInputsAdresse($requetePOST, $fillableAdresse);
-
-            // Si la validation ne passe pas, on renvoie un message d'erreur
-            if($resto == false){
-               Controller::erreur404();
-               return;
-            }
-         
-            $restos->editadresse($id, $resto);
-            header('Location:'.SITE.'fiche/'.$id);
-         }
-      }
-   }
-
-   public static function erreur404()
-   {
-      echo "Erreur 404 : Une erreur s'est produite !";
+      header('Location:'.SITE.'erreur404');
    }
 }

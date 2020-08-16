@@ -42,8 +42,12 @@ class Restos
     */
    public function delete(string $id)
    {
-      $_id = new MongoDB\BSON\ObjectId($id);
-      $this->restos->deleteOne(['_id' => $_id]);
+      try {
+         $_id = new MongoDB\BSON\ObjectId($id);
+      } catch (Exception $e) {
+         return false;
+      }
+      return $this->restos->deleteOne(['_id' => $_id]);
    }
 
    /**
@@ -65,7 +69,7 @@ class Restos
       $_id = new MongoDB\BSON\ObjectId($id);
       $this->restos->updateOne(['_id' => $_id], ['$set' => $resto]);
 
-      if($unsetKeys != [])
+      if ($unsetKeys != [])
          $this->restos->updateOne(['_id' => $_id], ['$unset' => $unsetKeys]);
    }
 
@@ -98,7 +102,12 @@ class Restos
     */
    public function fiche(string $id)
    {
-      $_id = new MongoDB\BSON\ObjectId($id);
+      try {
+         $_id = new MongoDB\BSON\ObjectId($id);
+      } catch (Exception $e) {
+         return false;
+      }
+
       return $this->restos->find(['_id' => $_id]);
    }
 
@@ -109,11 +118,13 @@ class Restos
     * @param int $sens
     * @return array
     */
-   public function liste($orderby = '', int $sens = 1)
+   public function liste($filtre = [], $projection = [])
    {
-      if ($orderby == '')
-         return $this->restos->find();
+      return $this->restos->find($filtre, $projection);
+   }
 
-      return $this->restos->find([], ['sort' => [$orderby => $sens]]);
+   public function listeCuisines()
+   {
+      return $this->restos->distinct('cuisines', ['cuisines' => ['$exists' => 1]]);
    }
 }

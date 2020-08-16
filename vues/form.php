@@ -1,7 +1,9 @@
-<div class="row flex-wrap centre p-4">
-   <h1>Création/MAJ de restaurant</h1>
-   <div class="col-12 centre p-1">
-      <form action="" method="POST" class="needs-validation p-3" style="max-width:600px">
+<div class="row flex-wrap centre p-1">
+   <div class="col-12">
+      <h1>Création/Maj d'un restaurant</h1>      
+   </div>
+   <div class="col-12 col-lg-8 centre p-1">
+      <form action="" method="POST" class="needs-validation p-3 w-100">
          <div class="form-row justify-content-center pb-3">
             <div class="col-6 mb-3">
                <label for="nom">Nom</label>

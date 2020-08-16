@@ -94,6 +94,15 @@ function verifInputsAdresse(array $POST, array $fillableAdresse)
  */
 function genererRestoFaker()
 {
+   $cuisinesMonde = ["albanaise","allemande","bavaroise","autrichienne","basque","belge","britannique","anglaise","écossaise","galloise","bulgare","chypriote","danoise",
+   "espagnole","galicienne","finlandaise","française","alsacienne","angevine","bourguignonne","gersoise","lyonnaise","grecque","hongroise","italienne","irlandaise",
+   "islandaise","lituanienne","luxembourgeoise","macédonienne","maltaise","monténégrine","néerlandaise","norvégienne","polonaise","portugaise","roumaine et molda",
+   "russe","serbe","slovaque","suédoise","suisse","tchèque","ukrainienne"];
+
+   $cuisinesFR = ["française","alsacienne","angevine","bourguignonne","gersoise","lyonnaise"];
+
+   $choixCuisines = $cuisinesFR;
+
    $faker = Faker\Factory::create('fr_FR');
    $resto['nom'] = $faker->company;
    $resto['tel'] = $faker->PhoneNumber;
@@ -101,7 +110,13 @@ function genererRestoFaker()
    $resto['tarif_min'] = rand(1, 10);
    $resto['tarif_max'] = rand(11, 50);
    $resto['presentation'] = $faker->realText($maxNbChars = 400, $indexSize = 2);
-   $resto['cuisines'] = [$faker->city, $faker->city, $faker->city, $faker->city];
+
+   // On insère au plus 3 cuisines en évitant les doublons
+   for ($i=0; $i < 3; $i++){
+      $randCuisine = $choixCuisines[rand(0, count($choixCuisines)-1)];
+      if(in_array($randCuisine, $resto['cuisines']) == false)
+         $resto['cuisines'][] = $randCuisine;
+   }
 
    $resto['adresse']['rue'] = $faker->streetAddress;
    $resto['adresse']['cp'] = rand(10000, 99999);
