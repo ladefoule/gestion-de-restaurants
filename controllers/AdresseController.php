@@ -18,11 +18,12 @@ class AdresseController
       {
          $id = $url[1];
          $resultatRequete = $restos->fiche($id);
-         if($resultatRequete == false){
+         if($resultatRequete == false || $resultatRequete->isDead()){
             header('Location:'.SITE.'erreur404');
             return;
          }
 
+         $resto = [];
          foreach ($resultatRequete as $value)
             $resto = $value;
 

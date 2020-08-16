@@ -17,7 +17,7 @@ class RestoController
       if (isset($url[1])) {
          $id = $url[1];
          $resultatRequete = $restos->fiche($id);
-         if($resultatRequete == false){
+         if($resultatRequete == false || $resultatRequete->isDead()){
             header('Location:'.SITE.'erreur404');
             return;
          }
@@ -175,7 +175,7 @@ class RestoController
       {
          $id = $url[1];
          $resultatRequete = $restos->fiche($id);
-         if($resultatRequete == false){
+         if($resultatRequete == false || $resultatRequete->isDead()){
             header('Location:'.SITE.'erreur404');
             return;
          }
