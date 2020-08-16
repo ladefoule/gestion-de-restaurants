@@ -66,7 +66,7 @@ function verifInputsAdresse(array $POST, array $fillableAdresse)
    $myInputs = filter_var_array($POST, $args);
    $floatKeys = ['longitude', 'latitude'];
    $intKeys = ['cp'];
-   $resto = [];
+   $adresse = [];
 
    foreach ($myInputs as $cle => $valeur) {
       // Si on envoie un input qui n'est pas autorisé
@@ -76,15 +76,43 @@ function verifInputsAdresse(array $POST, array $fillableAdresse)
       // On n'insère pas les clés qui ont des valeurs vides et qui ont passé le test de validation
       if($valeur !== false && $valeur != ''){
          if(in_array($cle, $floatKeys))
-            $resto['adresse'][$cle] = floatval($valeur);
+            $adresse['adresse'][$cle] = floatval($valeur);
          else if(in_array($cle, $intKeys))
-            $resto['adresse'][$cle] = intval($valeur);
+            $adresse['adresse'][$cle] = intval($valeur);
          else
-            $resto['adresse'][$cle] = htmlspecialchars($valeur);
+            $adresse['adresse'][$cle] = htmlspecialchars($valeur);
       }
    }
 
-   return $resto;
+   return $adresse;
+}
+
+function verifInputsNotes(array $POST, array $fillableNotes)
+{
+   $args = array(
+      'note'      => array('filter' => FILTER_VALIDATE_INT,
+                          'options' => array('min_range' => 1, 'max_range' => 5)),
+      'commentaire'      => FILTER_SANITIZE_SPECIAL_CHARS,
+   );
+
+   $myInputs = filter_var_array($POST, $args);
+   $note = [];
+
+   foreach ($myInputs as $cle => $valeur) {
+      // Si on envoie un input qui n'est pas autorisé
+      if(in_array($cle, $fillableNotes) == false)
+         return false;
+
+      // On n'insère pas les clés qui ont des valeurs vides et qui ont passé le test de validation
+      if($valeur !== false && $valeur != ''){
+         if($cle == 'note')
+            $note['note'] = intval($valeur);
+         else
+            $note['commentaire'] = htmlspecialchars($valeur);
+      }
+   }
+
+   return $note;
 }
 
 /**

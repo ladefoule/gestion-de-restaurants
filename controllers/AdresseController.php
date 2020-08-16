@@ -17,43 +17,53 @@ class AdresseController
       if (isset($url[1]))
       {
          $id = $url[1];
-         $resultatRequete = $restos->fiche($id);
-         if($resultatRequete == false || $resultatRequete->isDead()){
+         try {
+            $_id = new MongoDB\BSON\ObjectId($id);
+         } catch (Exception $e) {
+            header('Location:'.SITE.'erreur404');
+            return;
+         }
+         $resultatRequete = $restos->fiche($_id);
+         if($resultatRequete->isDead()){
             header('Location:'.SITE.'erreur404');
             return;
          }
 
          $resto = [];
+         // On récupère le resto renvoyé par la méthode fiche($_id)
          foreach ($resultatRequete as $value)
             $resto = $value;
 
          // On accède pour la 1ère fois à la page edit
          if(!isset($requetePOST['id'])){
-            // Décalaration dynamique des variables du resto
+            // Déclaration dynamique des variables définies dans le resto
             foreach ($resto as $cle => $valeur)
                $$cle = $valeur;
 
             if(isset($adresse) == false) // si le resto ne contient aucune donnée de resto
                $adresse = [];
 
-            foreach ($fillableAdresse as $valeur) // On fait la même chose pour l'adresse
+            // On crée toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
+            foreach ($fillableAdresse as $valeur)
                $adresse[$valeur] = isset($resto['adresse'][$valeur]) ? $resto['adresse'][$valeur] : '';
             
             require  './vues/form-adresse.php';
             return;
 
-         // Validation du formulaire depuis la page edit
+         // Validation du formulaire depuis la page editadresse
          }else{
-            $resto = verifInputsAdresse($requetePOST, $fillableAdresse);
-
-            // Si la validation ne passe pas, on renvoie un message d'erreur
-            if($resto == false){
+            $adresse = verifInputsAdresse($requetePOST, $fillableAdresse);
+            if($adresse === false){
                header('Location:'.SITE.'erreur404');
                return;
             }
-         
-            $restos->editadresse($id, $resto);
-            header('Location:'.SITE.'fiche/'.$id);
+            
+            if($adresse == []) // S'il n'y a aucune donnée d'adresse, alors on supprime la clé
+               $restos->deleteKey($_id, ['adresse' => '']);
+            else
+               $restos->editadresse($_id, $adresse);
+   
+            header('Location:'.SITE.'fiche/'.$_id);
             return;
          }
       }

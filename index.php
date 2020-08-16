@@ -19,7 +19,7 @@ $route = $url[0];
 $controller = 'ErreurController';
 $action = 'erreur404';
 
-$routes = ['fiche', 'ajout', 'edit', 'delete', 'liste'];
+$routes = ['fiche', 'ajout', 'edit', 'delete', 'liste', 'ajoutnote'];
 if(in_array($route, $routes)){
    $controller = 'RestoController';
    $action = $route;

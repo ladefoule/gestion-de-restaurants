@@ -22,7 +22,7 @@
          </div>
       </form>
    </div>
-   <table class="table table-striped table-secondary mt-3">
+   <table class="table table-striped table-Default mt-3">
       <thead>
          <tr>
             <th scope="col">#</th>
