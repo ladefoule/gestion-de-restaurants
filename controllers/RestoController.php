@@ -34,8 +34,12 @@ class RestoController
             if(isset($$valeur) == false)
                $$valeur = ($valeur == 'cuisines') ? [] : ''; 
          
+         $adresse = [];
+         foreach ($fillableAdresse as $valeur) // On fait la même chose pour l'adresse
+            $adresse[$valeur] = isset($resto['adresse'][$valeur]) ? $resto['adresse'][$valeur] : '';
+
          $listeCuisines = '';
-         foreach ($cuisines as $key => $value)
+         foreach ($cuisines as $key => $value) // On construit la chaines des cuisines
             $listeCuisines = $listeCuisines . ($listeCuisines == '' ? '' : '/') . $value;
             
          require  './vues/fiche.php';

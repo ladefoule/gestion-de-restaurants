@@ -19,18 +19,14 @@
             if($tarif_max != '' && $tarif_min != '')
                echo "<b>Tarif :</b> $tarif_min-$tarif_max €<br><br>";
 
-            if($adresse != '')
+            if($adresse != [])
             {
-               foreach ($fillableAdresse as $valeur) {
-                  if(isset($$valeur) == false)
-                     $$valeur = isset($adresse[$valeur]) ? $adresse[$valeur] : '';
-               }
                echo '<b>Adresse :</b> <a href="'.SITE.'editadresse/'.$id.'"><i class="fas fa-edit"></i></a><br>';
-               echo $rue . '<br>';
-               echo $cp . ' ' . $ville . '<br>';
-               echo $pays . '<br>';
-               if($longitude != '' && $latitude != '')
-                  echo 'Localisattion : <a href="https://www.openstreetmap.org/#map=19/'.$latitude.'/'.$longitude.'" target="_blank"><i class="fas fa-globe-europe"></i></a>';
+               echo $adresse['rue'] . '<br>';
+               echo $adresse['cp'] . ' ' . $adresse['ville'] . '<br>';
+               echo $adresse['pays'] . '<br>';
+               if($adresse['longitude'] != '' && $adresse['latitude'] != '')
+                  echo 'Localisattion : <a href="https://www.openstreetmap.org/#map=19/'.$adresse['latitude'].'/'.$adresse['longitude'].'" target="_blank"><i class="fas fa-globe-europe"></i></a>';
             }
 
             echo '</p>';

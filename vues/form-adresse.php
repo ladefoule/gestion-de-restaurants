@@ -15,12 +15,12 @@
          <div class="form-row justify-content-center pb-3">
             <div class="col-6 mb-3">
                <label for="rue">Rue</label>
-               <input type="text" name="rue" class="form-control " value="<?php echo $rue ?>">
+               <input type="text" name="rue" class="form-control " value="<?php echo $adresse['rue'] ?>">
 
             </div>
             <div class="col-6 mb-3">
                <label for="cp">Code postal</label>
-               <input type="number" name="cp" class="form-control " value="<?php echo $cp ?>">
+               <input type="number" name="cp" class="form-control " value="<?php echo $adresse['cp'] ?>">
 
             </div>
             
@@ -36,12 +36,12 @@
          <div class="form-row justify-content-center pb-3">
             <div class="col-6 mb-3">
                <label for="ville">Ville</label>
-               <input type="text" name="ville" class="form-control " value="<?php echo $ville ?>">
+               <input type="text" name="ville" class="form-control " value="<?php echo $adresse['ville'] ?>">
 
             </div>
             <div class="col-6 mb-3">
                <label for="pays">Pays</label>
-               <input type="text" name="pays" class="form-control " value="<?php echo $pays ?>">
+               <input type="text" name="pays" class="form-control " value="<?php echo $adresse['pays'] ?>">
 
             </div>
          </div>
@@ -49,13 +49,13 @@
          <div class="form-row justify-content-center pb-3">
             <div class="col-6 mb-3">
                <label for="latitude">Latitude</label>
-               <input type="number" step="any"  name="latitude" class="form-control " value="<?php echo $latitude ?>">
+               <input type="number" step="any"  name="latitude" class="form-control " value="<?php echo $adresse['latitude'] ?>">
 
             </div>
 
             <div class="col-6 mb-3">
                <label for="longitude">Longitude</label>
-               <input type="number" step="any" name="longitude" class="form-control " value="<?php echo $longitude ?>">
+               <input type="number" step="any" name="longitude" class="form-control " value="<?php echo $adresse['longitude'] ?>">
 
             </div>
          </div>

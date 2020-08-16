@@ -29,16 +29,15 @@ class AdresseController
 
          // On accède pour la 1ère fois à la page edit
          if(!isset($requetePOST['id'])){
-            // Décalaration dynamique des variables
+            // Décalaration dynamique des variables du resto
             foreach ($resto as $cle => $valeur)
                $$cle = $valeur;
 
-            if(isset($adresse) == false)
+            if(isset($adresse) == false) // si le resto ne contient aucune donnée de resto
                $adresse = [];
 
-            foreach ($fillableAdresse as $valeur)
-               if(isset($$valeur) == false)
-                  $$valeur = isset($adresse[$valeur]) ? $adresse[$valeur] : '';
+            foreach ($fillableAdresse as $valeur) // On fait la même chose pour l'adresse
+               $adresse[$valeur] = isset($resto['adresse'][$valeur]) ? $resto['adresse'][$valeur] : '';
             
             require  './vues/form-adresse.php';
             return;
