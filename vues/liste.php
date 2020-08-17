@@ -1,5 +1,5 @@
 <div class="row centre p1">
-   <div class="col-12">
+   <div class="col-12 mt-3">
       <h1>Liste des restaurants</h1>
    </div>
    <div class="col-12 col-lg-8 centre">

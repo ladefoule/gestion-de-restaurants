@@ -167,8 +167,16 @@ class Restos
     * @param MongoDB\BSON\ObjectId $_id
     * @return void
     */
-    public function moyenneNotes(MongoDB\BSON\ObjectId $_id)
-    {
-       //return $this->restos->aggregate('$group' => []);
-    }
+   public function moyenneNotes(MongoDB\BSON\ObjectId $_id)
+   {
+      return $this->restos->aggregate(
+         [
+            ['$match' => ['_id' => $_id]],
+            [
+               '$group' => ['_id' => '$_id', 
+                           'moyenne' => ['$avg' => ['$avg' => '$notes.note']]]
+            ]
+         ]
+      );
+   }
 }

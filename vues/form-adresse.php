@@ -25,11 +25,7 @@
             </div>
             
             <?php
-            if(isset($url[1])){
-               $id = $url[1];
-               echo "<input type=\"hidden\" name='maj'>";
                echo "<input type=\"hidden\" name=\"id\" value=\"$id\">";
-            }
             ?>
          </div>
 

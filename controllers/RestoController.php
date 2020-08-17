@@ -47,10 +47,16 @@ class RestoController
             $adresse[$valeur] = isset($resto['adresse'][$valeur]) ? $resto['adresse'][$valeur] : '';
 
          $listeCuisines = '';
-         foreach ($cuisines as $key => $value) // On construit la chaines des cuisines
+         foreach ($cuisines as $value) // On construit la chaines des cuisines
             $listeCuisines = $listeCuisines . ($listeCuisines == '' ? '' : '/') . $value;
 
          $moyenne = $restos->moyenneNotes($_id);
+         if($moyenne->isDead()){
+            header('Location:'.SITE.'erreur404');
+            return;
+         }
+         foreach ($moyenne as $value)
+            $moyenne = ( $value['moyenne'] * 100 ) / 5; // On convertit la moyenne en fonction de la taille de notre div qui contient les étoiles
             
          require  './vues/fiche.php';
          return;
@@ -242,6 +248,12 @@ class RestoController
       header('Location:'.SITE.'erreur404');
    }
 
+   /**
+    * Ajout d'une note au resto
+    *
+    * @param array $array
+    * @return void
+    */
    public static function ajoutnote(array $array)
    {
       $restos = $array['restos'];
@@ -258,6 +270,15 @@ class RestoController
             header('Location:'.SITE.'erreur404');
             return;
          }
+
+         // Note automatique avec faker
+         if( in_array('faker', $url) ){
+            $note = genererNoteFaker();
+            $restos->ajoutnote($_id, $note);
+            header('Location:'.SITE.'fiche/'.$id);
+            return;
+         }
+         
          $resultatRequete = $restos->fiche($_id);
          if($resultatRequete->isDead()){
             header('Location:'.SITE.'erreur404');

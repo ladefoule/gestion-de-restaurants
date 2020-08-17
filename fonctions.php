@@ -116,6 +116,19 @@ function verifInputsNotes(array $POST, array $fillableNotes)
 }
 
 /**
+ * Génération aleatoire de note
+ *
+ * @return array
+ */
+function genererNoteFaker()
+{
+   $faker = Faker\Factory::create('fr_FR');
+   $note['note'] = rand(1, 5);
+   $note['commentaire'] = $faker->realText($maxNbChars = 30, $indexSize = 2);
+   return $note;
+}
+
+/**
  * Génération aleatoire de resto
  *
  * @return array
@@ -152,6 +165,11 @@ function genererRestoFaker()
    $resto['adresse']['pays'] = $faker->country;
    $resto['adresse']['longitude'] = $faker->randomFloat($nbMaxDecimals = 10, $min = -90, $max = 90) ;
    $resto['adresse']['latitude'] = $faker->randomFloat($nbMaxDecimals = 10, $min = -90, $max = 90) ;
+
+   // On insère 4 notes
+   for ($i=0; $i < 3; $i++){
+      $resto['notes'][] = ['note' => rand(1, 5), 'commentaire' => $faker->realText($maxNbChars = 30, $indexSize = 2)];
+   }
 
    return $resto;
 }

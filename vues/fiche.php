@@ -25,7 +25,7 @@
       <img src="<?php echo SITE . 'img/lorempixel-' . rand(1, 10) . '.jpg' ?>" class="card-img-top" alt="...">
       <div class="card-body">
          <h5 class="card-title font-weight-bold h1"><?= $nom ?></h5>
-         <div class="flex-12 mb-4" style="width:100px;">
+         <div class="flex mb-4" style="width:100px;float:left;">
             <!--div en arrière-plan qui s'allongera en fonction de la valeur de $value-->
             <div id="moyenne">
 
@@ -38,12 +38,13 @@
                   <img id="tde_5" src="<?php echo SITE ?>img/star.png" class="tde">
                </div>
             </div>
-            <a class="float:left" href="<?php echo SITE.'ajoutnote/'.$id ?>">Noter?</a>
          </div>
+         <a class="float:left" href="<?php echo SITE.'ajoutnote/'.$id ?>">Noter?</a>
+         <a class="float:left" href="<?php echo SITE.'ajoutnote/'.$id.'/faker' ?>">Noter (faker)?</a>
          
          <?php
          if ($presentation != '')
-            echo '<textarea class="form-control mb-4" id="presentation" readonly>' . $presentation . '</textarea>';
+            echo '<textarea class="form-control mb-4" id="presentation" rows="6" readonly>' . $presentation . '</textarea>';
 
          echo '<p>';
 
