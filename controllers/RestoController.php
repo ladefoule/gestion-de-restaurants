@@ -10,59 +10,39 @@ class RestoController
    public static function fiche(array $array)
    {
       $restos = $array['restos'];
-      $fillable = $restos->getFillable();
-      $fillableAdresse = $restos->getFillableAdresse();
       $url = explode('/', $array['requeteGET']);
 
-      if (isset($url[1])) {
-         $id = $url[1];
-         try {
-            $_id = new MongoDB\BSON\ObjectId($id);
-         } catch (Exception $e) {
-            header('Location:'.SITE.'erreur404');
-            return;
-         }
-         $resultatRequete = $restos->fiche($_id);
-         if($resultatRequete->isDead()){
-            header('Location:'.SITE.'erreur404');
-            return;
-         }
-
-         $resto = [];
-         // On récupère le resto renvoyé par la méthode fiche($_id)
-         foreach ($resultatRequete as $value)
-            $resto = $value;
-
-         // Déclaration dynamique des variables définies dans le resto
-         foreach ($resto as $cle => $valeur)
-            $$cle = $valeur;
-
-         // On crée toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
-         foreach ($fillable as $valeur)
-            if(isset($$valeur) == false)
-               $$valeur = ($valeur == 'cuisines') ? [] : ''; 
-         
-         $adresse = []; // La clé 'adresse' n'est pas dans fillable du coup on initialise la variable ici
-         foreach ($fillableAdresse as $valeur) // On crée tous les index présents dans fillableAdresse qui ne sont pas définies pour ce restaurant
-            $adresse[$valeur] = isset($resto['adresse'][$valeur]) ? $resto['adresse'][$valeur] : '';
-
-         $listeCuisines = '';
-         foreach ($cuisines as $value) // On construit la chaines des cuisines
-            $listeCuisines = $listeCuisines . ($listeCuisines == '' ? '' : '/') . $value;
-
-         $moyenne = $restos->moyenneNotes($_id);
-         if($moyenne->isDead()){
-            header('Location:'.SITE.'erreur404');
-            return;
-         }
-         foreach ($moyenne as $value)
-            $moyenne = ( $value['moyenne'] * 100 ) / 5; // On convertit la moyenne en fonction de la taille de notre div qui contient les étoiles
-            
-         require  './vues/fiche.php';
+      if (isset($url[1]) == false){
+         ErreurController::erreur404(ID_NON_RENSEIGNE);
          return;
       }
 
-      header('Location:'.SITE.'erreur404');
+      $id = $url[1];
+      try {
+         $_id = new MongoDB\BSON\ObjectId($id);
+      } catch (Exception $e) {
+         ErreurController::erreur404(ID_INCORRECT);
+         return;
+      }
+      $resultatRequete = $restos->fiche($_id);
+      if($resultatRequete->isDead()){
+         ErreurController::erreur404(RESTO_INCONNU);
+         return;
+      }
+
+      foreach ($resultatRequete as $value)
+         $resto = $value;
+
+      $moyenne = $restos->moyenneNotes($_id);
+      if($moyenne->isDead()){
+         ErreurController::erreur404(RESTO_INCONNU);
+         return;
+      }
+      foreach ($moyenne as $value)
+         $moyenne = ( $value['moyenne'] * 100 ) / 5; // On convertit la moyenne en fonction de la taille de notre div qui contient les étoiles
+         
+      require  './vues/fiche.php';
+      return;
    }
 
    /**
@@ -115,25 +95,26 @@ class RestoController
       $restos = $array['restos'];
       $url = explode('/', $array['requeteGET']);
 
-      if (isset($url[1])) { // Si on a un ID
-         $id = $url[1];
-         try {
-            $_id = new MongoDB\BSON\ObjectId($id);
-         } catch (Exception $e) {
-            header('Location:'.SITE.'erreur404');
-            return;
-         }
-         $resultatRequete = $restos->delete($_id);
-         if($resultatRequete->getDeletedCount() == 0){
-            header('Location:'.SITE.'erreur404');
-            return;
-         }
-
-         header('Location:'.SITE.'liste');
+      if (isset($url[1]) == false){
+         ErreurController::erreur404(ID_NON_RENSEIGNE);
          return;
       }
 
-      header('Location:'.SITE.'erreur404');
+      $id = $url[1];
+      try {
+         $_id = new MongoDB\BSON\ObjectId($id);
+      } catch (Exception $e) {
+         ErreurController::erreur404(ID_INCORRECT);
+         return;
+      }
+      $resultatRequete = $restos->delete($_id);
+      if($resultatRequete->getDeletedCount() == 0){
+         ErreurController::erreur404(RESTO_INCONNU);
+         return;
+      }
+
+      header('Location:'.SITE.'liste');
+      return;
    }
 
    /**
@@ -145,7 +126,6 @@ class RestoController
    public static function ajout(array $array)
    {
       $restos = $array['restos'];
-      $fillable = $restos->getFillable();
 
       // Si le mot faker est present dans l'url alors on génère un resto
       $url = $array['requeteGET'];
@@ -159,24 +139,11 @@ class RestoController
 
       // Si on accède pour la 1ère fois à la page d'ajout (formulaire)
       if(count($array['requetePOST']) == 0){
-         // On crée toutes les variables présentes dans fillable
-         foreach ($fillable as $valeur) {
-            if(isset($$valeur) == false)
-               $$valeur = '';
-         }
-         $listeCuisines = '';
          require  './vues/form.php';
-         return;
-
-      // Si on reçoit des infos venant du formulaire (POST)
-      }else {
+         return;      
+      }else {// Si on reçoit des infos venant du formulaire (POST)
          $requete = $array['requetePOST'];
-         $resto = verifInputs($requete, $fillable);
-         if($resto === false){
-            header('Location:'.SITE.'erreur404');
-            return;
-         }
-      
+         $resto = verifInputs($requete);      
          $restos->ajout($resto);
          header('Location:'.SITE.'liste');
       }
@@ -191,61 +158,40 @@ class RestoController
    public static function edit(array $array)
    {
       $restos = $array['restos'];
-      $fillable = $restos->getFillable();
       $url = explode('/', $array['requeteGET']);
       $requetePOST = $array['requetePOST'];
 
-      if (isset($url[1])) // Si on a un ID
-      {
-         $id = $url[1];
-         try {
-            $_id = new MongoDB\BSON\ObjectId($id);
-         } catch (Exception $e) {
-            header('Location:'.SITE.'erreur404');
-            return;
-         }
-         $resultatRequete = $restos->fiche($_id);
-         if($resultatRequete->isDead()){
-            header('Location:'.SITE.'erreur404');
-            return;
-         }
-
-         foreach ($resultatRequete as $value) // On récupère le resto (fiche($id) renvoie que 1 seul resto)
-            $resto = $value;
-
-         // On accède pour la 1ère fois à la page edit
-         if(!isset($requetePOST['id'])){
-            // Décalaration dynamique des variables
-            foreach ($resto as $cle => $valeur)
-               $$cle = $valeur;
-
-            // On crée toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
-            foreach ($fillable as $valeur)
-               if(isset($$valeur) == false)
-                  $$valeur = ($valeur == 'cuisines') ? [] : ''; 
-
-            $listeCuisines = '';
-            foreach ($cuisines as $key => $value)
-               $listeCuisines = $listeCuisines . ($listeCuisines == '' ? '' : '/') . $value;
-
-            require  './vues/form.php';
-            return;
-
-         // Validation du formulaire depuis la page edit
-         }else{
-            $resto = verifInputs($requetePOST, $fillable);
-            if($resto === false){
-               header('Location:'.SITE.'erreur404');
-               return;
-            }
-         
-            $restos->edit($_id, $resto);
-            header('Location:'.SITE.'fiche/'.$_id);
-            return;
-         }
+      if (isset($url[1]) == false){
+         ErreurController::erreur404(ID_NON_RENSEIGNE);
+         return;
       }
 
-      header('Location:'.SITE.'erreur404');
+      $id = $url[1];
+      try {
+         $_id = new MongoDB\BSON\ObjectId($id);
+      } catch (Exception $e) {
+         ErreurController::erreur404(ID_INCORRECT);
+         return;
+      }
+      $resultatRequete = $restos->fiche($_id);
+      if($resultatRequete->isDead()){
+         ErreurController::erreur404(RESTO_INCONNU);
+         return;
+      }
+
+      // On récupère le resto (fiche($id) renvoie que 1 seul resto)
+      foreach ($resultatRequete as $value) 
+         $resto = $value;
+
+      if(!isset($requetePOST['id'])){// On accède pour la 1ère fois à la page edit
+         require  './vues/form.php';
+         return;
+      }else{// Validation du formulaire depuis la page edit
+         $resto = verifInputs($requetePOST);      
+         $restos->edit($_id, $resto);
+         header('Location:'.SITE.'fiche/'.$_id);
+         return;
+      }
    }
 
    /**
@@ -257,60 +203,52 @@ class RestoController
    public static function ajoutnote(array $array)
    {
       $restos = $array['restos'];
-      $fillableNote = $restos->getFillableNote();
       $url = explode('/', $array['requeteGET']);
       $requetePOST = $array['requetePOST'];
 
-      if (isset($url[1])) // Si on a un ID
-      {
-         $id = $url[1];
-         try {
-            $_id = new MongoDB\BSON\ObjectId($id);
-         } catch (Exception $e) {
-            header('Location:'.SITE.'erreur404');
-            return;
-         }
-
-         // Note automatique avec faker
-         if( in_array('faker', $url) ){
-            $note = genererNoteFaker();
-            $restos->ajoutnote($_id, $note);
-            header('Location:'.SITE.'fiche/'.$id);
-            return;
-         }
+      if (isset($url[1]) == false){
+         ErreurController::erreur404(ID_NON_RENSEIGNE);
+         return;
+      }
          
-         $resultatRequete = $restos->fiche($_id);
-         if($resultatRequete->isDead()){
-            header('Location:'.SITE.'erreur404');
+      $id = $url[1];
+      try {
+         $_id = new MongoDB\BSON\ObjectId($id);
+      } catch (Exception $e) {
+         ErreurController::erreur404(ID_INCORRECT);
+         return;
+      }
+
+      // Note automatique avec faker
+      if( in_array('faker', $url) ){
+         $note = genererNoteFaker();
+         $restos->ajoutnote($_id, $note);
+         header('Location:'.SITE.'fiche/'.$id);
+         return;
+      }
+      
+      $resultatRequete = $restos->fiche($_id);
+      if($resultatRequete->isDead()){
+         ErreurController::erreur404(RESTO_INCONNU);
+         return;
+      }
+
+      foreach ($resultatRequete as $value)
+         $resto = $value;
+
+      if(!isset($requetePOST['id'])){// On accède pour la 1ère fois à la page ajout note
+         require  './vues/form-note.php';
+         return;
+      }else{// Validation du formulaire
+         $note = verifInputsNotes($requetePOST);
+         if($note == []){
+            ErreurController::erreur404("Merci de renseigner au moins une note ou un commentaire");
             return;
          }
-
-         foreach ($resultatRequete as $value) // On récupère le resto (fiche($id) renvoie que 1 seul resto)
-            $resto = $value;
-
-            $nom = (isset($resto->nom) != false) ? $resto->nom : '';
-
-         // On accède pour la 1ère fois à la page edit
-         if(!isset($requetePOST['id'])){
-            if(isset($resto['notes']) == false)
-               $resto['notes'] = [];
-            
-            $commentaire = $note = '';
-
-            require  './vues/form-note.php';
-            return;
-         // Validation du formulaire depuis la page edit
-         }else{
-            $note = verifInputsNotes($requetePOST, $fillableNote);
-            if($note === false){
-               header('Location:'.SITE.'erreur404');
-               return;
-            }
-         
-            $restos->ajoutNote($_id, $note);
-            header('Location:'.SITE.'fiche/'.$_id);
-            return;
-         }
+      
+         $restos->ajoutNote($_id, $note);
+         header('Location:'.SITE.'fiche/'.$_id);
+         return;
       }
    }
 }

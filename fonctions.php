@@ -6,10 +6,9 @@
  * On renvoie un tableau avec les infos du restos reçus
  *
  * @param array $POST
- * @param array $fillable
  * @return void
  */
-function verifInputs(array $POST, array $fillable)
+function verifInputs(array $POST)
 {
    $args = array(
       'nom'      => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -24,32 +23,19 @@ function verifInputs(array $POST, array $fillable)
    );
 
    $myInputs = filter_var_array($POST, $args);
-   $intKeys = ['tarif_min', 'tarif_max'];
+
    $resto = [];
-
-   foreach ($myInputs as $cle => $valeur) {
-      // Si on envoie un input qui n'est pas autorisé
-      if(in_array($cle, $fillable) == false)
-         return false;
-
-      // On n'insère pas les clés qui ont des valeurs vides et qui ont passé le test de validation
-      if($valeur !== false && $valeur != ''){
-         if(in_array($cle, $intKeys))
-            $resto[$cle] = intval($valeur);
-         else{
-            if($cle == 'cuisines'){
-               $valeur = explode('/', htmlspecialchars($valeur));
-               $resto[$cle] = $valeur;
-            }else
-               $resto[$cle] = htmlspecialchars($valeur);
-         }
-      }
-   }
+   foreach ($myInputs as $cle => $valeur)
+      if($valeur !== false && $valeur != '')
+         if($cle == 'cuisines')
+            $resto[$cle] = explode('/', $valeur);
+         else
+            $resto[$cle] = $valeur; 
 
    return $resto;
 }
 
-function verifInputsAdresse(array $POST, array $fillableAdresse)
+function verifInputsAdresse(array $POST)
 {
    $args = array(
       'cp'      => array('filter' => FILTER_VALIDATE_INT,
@@ -64,30 +50,16 @@ function verifInputsAdresse(array $POST, array $fillableAdresse)
    );
 
    $myInputs = filter_var_array($POST, $args);
-   $floatKeys = ['longitude', 'latitude'];
-   $intKeys = ['cp'];
+
    $adresse = [];
-
-   foreach ($myInputs as $cle => $valeur) {
-      // Si on envoie un input qui n'est pas autorisé
-      if(in_array($cle, $fillableAdresse) == false)
-         return false;
-
-      // On n'insère pas les clés qui ont des valeurs vides et qui ont passé le test de validation
-      if($valeur !== false && $valeur != ''){
-         if(in_array($cle, $floatKeys))
-            $adresse['adresse'][$cle] = floatval($valeur);
-         else if(in_array($cle, $intKeys))
-            $adresse['adresse'][$cle] = intval($valeur);
-         else
-            $adresse['adresse'][$cle] = htmlspecialchars($valeur);
-      }
-   }
+   foreach ($myInputs as $cle => $valeur)
+      if($valeur !== false && $valeur != '')
+         $adresse[$cle] = $valeur;
 
    return $adresse;
 }
 
-function verifInputsNotes(array $POST, array $fillableNotes)
+function verifInputsNotes(array $POST)
 {
    $args = array(
       'note'      => array('filter' => FILTER_VALIDATE_INT,
@@ -96,21 +68,11 @@ function verifInputsNotes(array $POST, array $fillableNotes)
    );
 
    $myInputs = filter_var_array($POST, $args);
+   
    $note = [];
-
-   foreach ($myInputs as $cle => $valeur) {
-      // Si on envoie un input qui n'est pas autorisé
-      if(in_array($cle, $fillableNotes) == false)
-         return false;
-
-      // On n'insère pas les clés qui ont des valeurs vides et qui ont passé le test de validation
-      if($valeur !== false && $valeur != ''){
-         if($cle == 'note')
-            $note['note'] = intval($valeur);
-         else
-            $note['commentaire'] = htmlspecialchars($valeur);
-      }
-   }
+   foreach ($myInputs as $cle => $valeur)
+      if($valeur !== false && $valeur != '')
+            $note[$cle] = intval($valeur);
 
    return $note;
 }
@@ -172,6 +134,15 @@ function genererRestoFaker()
    }
 
    return $resto;
+}
+
+function tabCuisineEnChaine($cuisines)
+{
+   $listeCuisines = '';
+   foreach ($cuisines as $cuisine) // On construit la chaines des cuisines
+      $listeCuisines = $listeCuisines . ($listeCuisines == '' ? '' : '/') . $cuisine;
+
+   return $listeCuisines;
 }
 
 spl_autoload_register(function ($class_name) {

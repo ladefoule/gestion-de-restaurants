@@ -14,60 +14,45 @@ class AdresseController
       $url = explode('/', $array['requeteGET']);
       $requetePOST = $array['requetePOST'];
 
-      if (isset($url[1]))
-      {
-         $id = $url[1];
-         try {
-            $_id = new MongoDB\BSON\ObjectId($id);
-         } catch (Exception $e) {
-            header('Location:'.SITE.'erreur404');
-            return;
-         }
-         $resultatRequete = $restos->fiche($_id);
-         if($resultatRequete->isDead()){
-            header('Location:'.SITE.'erreur404');
-            return;
-         }
+      if (isset($url[1]) == false){
+         ErreurController::erreur404(ID_NON_RENSEIGNE);
+         return;
+      }
 
-         $resto = [];
-         // On récupère le resto renvoyé par la méthode fiche($_id)
-         foreach ($resultatRequete as $value)
-            $resto = $value;
+      $id = $url[1];
+      try {
+         $_id = new MongoDB\BSON\ObjectId($id);
+      } catch (Exception $e) {
+         ErreurController::erreur404(ID_INCORRECT);
+         return;
+      }
+      $resultatRequete = $restos->fiche($_id);
+      if($resultatRequete->isDead()){
+         ErreurController::erreur404(RESTO_INCONNU);
+         return;
+      }
 
-         // On accède pour la 1ère fois à la page edit
-         if(!isset($requetePOST['id'])){
-            // Déclaration dynamique des variables définies dans le resto
-            foreach ($resto as $cle => $valeur)
-               $$cle = $valeur;
+      // On récupère le resto renvoyé par la méthode fiche($_id)
+      foreach ($resultatRequete as $value)
+         $resto = $value;
 
-            if(isset($adresse) == false) // si le resto ne contient aucune donnée de resto
-               $adresse = [];
+      // On accède pour la 1ère fois à la page edit
+      if(!isset($requetePOST['id'])){        
+         require  './vues/form-adresse.php';
+         return;
 
-            // On crée toutes les variables présentes dans fillable qui ne sont pas définies pour ce restaurant
-            foreach ($fillableAdresse as $valeur)
-               $adresse[$valeur] = isset($resto['adresse'][$valeur]) ? $resto['adresse'][$valeur] : '';
-            
-            require  './vues/form-adresse.php';
-            return;
-
-         // Validation du formulaire depuis la page editadresse
-         }else{
-            $adresse = verifInputsAdresse($requetePOST, $fillableAdresse);
-            if($adresse === false){
-               header('Location:'.SITE.'erreur404');
-               return;
-            }
-            
-            if($adresse == []) // S'il n'y a aucune donnée d'adresse, alors on supprime la clé
-               $restos->deleteKey($_id, ['adresse' => '']);
-            else
-               $restos->editadresse($_id, $adresse);
-   
+      // Validation du formulaire depuis la page editadresse
+      }else{
+         $adresse = verifInputsAdresse($requetePOST, $fillableAdresse);
+         if($adresse == []){
+            $restos->deleteKey($_id, ['adresse' => '']);
             header('Location:'.SITE.'fiche/'.$_id);
             return;
          }
+         
+         $restos->editadresse($_id, ['adresse' => $adresse]);
+         header('Location:'.SITE.'fiche/'.$_id);
+         return;
       }
-
-      header('Location:'.SITE.'erreur404');
    }
 }

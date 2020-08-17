@@ -2,9 +2,9 @@
 
 class ErreurController{
    
-   public static function erreur404()
+   public static function erreur404($messageErreur)
    {
-      echo "Erreur 404 : Une erreur s'est produite !";
+      echo "Erreur 404 : " . $messageErreur;
    }
 }
 

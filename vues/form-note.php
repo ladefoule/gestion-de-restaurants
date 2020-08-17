@@ -7,7 +7,7 @@
          <div class="form-row justify-content-center pb-3">
             <div class="col-6 mb-3">
                <label for="nom">Nom</label>
-               <input type="text" class="form-control " value="<?php echo $nom ?>" disabled>
+               <input type="text" class="form-control " value="<?php echo $resto->nom ?? '' ?>" disabled>
 
             </div>
          </div>
@@ -20,7 +20,7 @@
             </div>
             <div class="col-12 ">
                <label for="commentaire">Commentaire</label>
-               <textarea name="commentaire" class="form-control " id="presentation" placeholder=""><?php echo $commentaire ?></textarea>
+               <textarea name="commentaire" class="form-control " id="presentation" placeholder=""></textarea>
 
             </div>
             
